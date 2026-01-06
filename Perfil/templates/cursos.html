@@ -2,11 +2,9 @@
 
 {% block content %}
 <style>
-/* ✨ Animación card flotante */
 .curso-card {
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-
 .curso-card:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
@@ -20,14 +18,17 @@
     </p>
 
     <div class="row">
-        <!-- 📚 LISTADO DE CURSOS -->
         <div class="col-md-5" style="max-height: 80vh; overflow-y: auto;">
             <div class="row">
                 {% for curso in cursos %}
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm border-start border-4 border-primary curso-card"
                          style="cursor: pointer;"
+                         {% if curso.rutacertificado %}
                          data-url="{{ curso.rutacertificado.url }}"
+                         {% else %}
+                         data-url=""
+                         {% endif %}
                          data-nombre="{{ curso.nombrecurso }}"
                          onclick="verCertificado(this.getAttribute('data-url'), this.getAttribute('data-nombre'))">
 
@@ -42,32 +43,22 @@
                                 <strong>Descripción:</strong> {{ curso.descripcioncurso }}
                             </p>
 
-                            <div class="mt-3 p-3 bg-light rounded"
-                                 style="font-size: 0.9em; border-left: 4px solid #dee2e6;">
+                            <div class="mt-3 p-3 bg-light rounded" style="font-size: 0.9em; border-left: 4px solid #dee2e6;">
                                 <p class="mb-1"><strong>Contacto:</strong> {{ curso.nombrecontactoauspicia }}</p>
                                 <p class="mb-1"><strong>Teléfono:</strong> {{ curso.telefonocontactoauspicia }}</p>
                                 <p class="mb-0"><strong>Email Empresa:</strong> {{ curso.emailempresapatrocinadora }}</p>
                             </div>
 
                             <p class="card-text mt-3 text-end" style="color: black;">
-                                <span class="badge bg-secondary">
-                                    Duración: {{ curso.totalhoras }} horas.
-                                </span>
+                                <span class="badge bg-secondary">Duración: {{ curso.totalhoras }} horas.</span>
                             </p>
 
                             {% if curso.rutacertificado %}
                             <div class="mt-2 text-center">
-                                <a href="{{ curso.rutacertificado.url }}"
-                                   class="btn btn-sm btn-primary shadow-sm"
-                                   download
-                                   onclick="event.stopPropagation();">
+                                <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-primary shadow-sm" download onclick="event.stopPropagation();">
                                     <i class="bi bi-download"></i> Descargar
                                 </a>
-
-                                <a href="{{ curso.rutacertificado.url }}"
-                                   class="btn btn-sm btn-link"
-                                   target="_blank"
-                                   onclick="event.stopPropagation();">
+                                <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-link" target="_blank" onclick="event.stopPropagation();">
                                     Abrir en pestaña nueva
                                 </a>
                             </div>
@@ -77,24 +68,18 @@
                 </div>
                 {% empty %}
                 <div class="col-12">
-                    <div class="alert alert-info text-center">
-                        Aún no hay cursos activos.
-                    </div>
+                    <div class="alert alert-info text-center">Aún no hay cursos activos.</div>
                 </div>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- 📄 VISOR DE CERTIFICADO -->
         <div class="col-md-7">
-            <div class="card shadow-sm sticky-top"
-                 style="top: 20px; height: 80vh; border: none;">
+            <div class="card shadow-sm sticky-top" style="top: 20px; height: 80vh; border: none;">
                 <div class="card-header bg-dark text-white">
                     <span id="titulo-visor">Visor de Certificado</span>
                 </div>
-                <div class="card-body p-0 bg-secondary d-flex align-items-center justify-content-center"
-                     id="contenedor-visor"
-                     style="overflow: hidden;">
+                <div class="card-body p-0 bg-secondary d-flex align-items-center justify-content-center" id="contenedor-visor" style="overflow: hidden;">
                     <div class="text-center text-white p-5" id="mensaje-inicial">
                         <i class="bi bi-file-pdf fa-4x mb-3"></i>
                         <p>Selecciona un curso para ver el documento.</p>
@@ -103,12 +88,6 @@
             </div>
         </div>
     </div>
-
-    <div class="text-center mt-4">
-        <a href="{% url 'home' %}" class="btn btn-outline-dark">
-            Volver al inicio
-        </a>
-    </div>
 </main>
 
 <script>
@@ -116,36 +95,21 @@ function verCertificado(url, nombre) {
     if (!url || url === 'None' || url === '') return;
 
     const contenedor = document.getElementById('contenedor-visor');
-    const titulo = document.getElementById('titulo-visor');
-    titulo.innerText = "Viendo: " + nombre;
-
+    document.getElementById('titulo-visor').innerText = "Viendo: " + nombre;
     contenedor.innerHTML = '';
 
     if (url.toLowerCase().endsWith('.pdf')) {
-        contenedor.innerHTML = `
-            <div class="text-center text-white p-4">
-                <i class="bi bi-file-earmark-pdf mb-3"
-                   style="font-size: 3rem; opacity: 0.7;"></i>
-                <p>
-                    El certificado es un archivo <strong>PDF</strong>.<br>
-                    Usa los botones del curso para <strong>Descargar</strong> o
-                    <strong>Abrir</strong>.
-                </p>
-            </div>`;
+        // CAMBIO: Ahora carga el PDF directamente en el visor
+        contenedor.innerHTML = `<embed src="${url}" type="application/pdf" width="100%" height="100%" />`;
     } else {
-        contenedor.innerHTML = `
-            <img src="${url}"
-                 style="max-width: 95%; max-height: 95%; object-fit: contain;" />`;
+        contenedor.innerHTML = `<img src="${url}" style="max-width: 95%; max-height: 95%; object-fit: contain;" />`;
     }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    const primeraCard = document.querySelector('.curso-card');
+    const primeraCard = document.querySelector('.curso-card[data-url]:not([data-url=""])');
     if (primeraCard) {
-        verCertificado(
-            primeraCard.getAttribute('data-url'),
-            primeraCard.getAttribute('data-nombre')
-        );
+        verCertificado(primeraCard.getAttribute('data-url'), primeraCard.getAttribute('data-nombre'));
     }
 });
 </script>
