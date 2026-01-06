@@ -4,10 +4,6 @@ set -o errexit
 # --- 1. INSTALAR DEPENDENCIAS ---
 pip install -r requirements.txt
 
-# --- 2. LIMPIAR COMPLETAMENTE LA BASE DE DATOS (PostgreSQL) ---
-# Esto borra todas las tablas, datos y relaciones problemáticas
-echo "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" | psql $DATABASE_URL
-
 # --- 3. MIGRACIONES DESDE CERO ---
 python manage.py makemigrations
 python manage.py migrate
