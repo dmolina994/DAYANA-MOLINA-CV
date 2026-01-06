@@ -35,24 +35,6 @@ def experiencia(request):
     )
     return render(request, 'experiencia.html', {'experiencias': experiencias, 'perfil': perfil})
 
-def productos_academicos(request):
-    perfil = get_active_profile()
-    # Nombre 'productos' para el template
-    productos = ProductoAcademico.objects.filter(
-        idperfilconqueestaactivo=perfil,
-        activarparaqueseveaenfront=True
-    )
-    return render(request, 'productos_academicos.html', {'productos': productos, 'perfil': perfil})
-
-def productos_laborales(request):
-    perfil = get_active_profile()
-    # Nombre 'productos' para el template
-    productos = ProductoLaboral.objects.filter(
-        idperfilconqueestaactivo=perfil,
-        activarparaqueseveaenfront=True
-    ).order_by('-fechaproducto')
-    return render(request, 'productos_laborales.html', {'productos': productos, 'perfil': perfil})
-
 def cursos(request):
     perfil = get_active_profile()
     # Nombre 'cursos' para coincidir con {% for curso in cursos %}
@@ -71,11 +53,29 @@ def reconocimientos(request):
     ).order_by('-fechareconocimiento')
     return render(request, 'reconocimientos.html', {'reconocimientos': recs, 'perfil': perfil})
 
-def garage(request):
+def productos_academicos(request):
     perfil = get_active_profile()
-    # Nombre 'items' para el template
-    items = VentaGarage.objects.filter(
+    # Cambiado a 'productos_academicos' para que tu HTML lo encuentre
+    datos = ProductoAcademico.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'garage.html', {'items': items, 'perfil': perfil})
+    return render(request, 'productos_academicos.html', {'productos_academicos': datos, 'perfil': perfil})
+
+def productos_laborales(request):
+    perfil = get_active_profile()
+    # Cambiado a 'productos_laborales' para que tu HTML lo encuentre
+    datos = ProductoLaboral.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True
+    ).order_by('-fechaproducto')
+    return render(request, 'productos_laborales.html', {'productos_laborales': datos, 'perfil': perfil})
+
+def garage(request):
+    perfil = get_active_profile()
+    # Usamos 'productos_garage' o el nombre que tengas en el {% for ... %} de garage.html
+    datos = VentaGarage.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True
+    )
+    return render(request, 'garage.html', {'productos_garage': datos, 'perfil': perfil})
