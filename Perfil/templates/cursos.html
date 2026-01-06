@@ -2,127 +2,97 @@
 
 {% block content %}
 <style>
-    /* ✨ Mejora de tarjetas para que no se vean amontonadas */
+    /* ✨ Diseño de tarjetas profesionales */
     .curso-card {
         transition: all 0.3s ease;
         border: none !important;
-        border-left: 5px solid #0d6efd !important; /* Borde azul distintivo */
+        border-top: 5px solid #0d6efd !important;
+        border-radius: 12px !important;
         background-color: #ffffff;
+        height: 100%;
     }
     .curso-card:hover {
-        transform: translateX(10px); /* Efecto de desplazamiento lateral */
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        background-color: #f8f9fa;
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
     }
     .info-contacto {
         font-size: 0.85rem;
-        background: #f1f3f5;
+        background: #f8f9fa;
         border-radius: 8px;
-        padding: 10px;
-        color: #495057;
+        padding: 12px;
+        border-left: 3px solid #dee2e6;
+    }
+    .badge-horas {
+        background-color: #212529;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
     }
 </style>
 
-<main class="container-fluid py-5 px-4">
-    <h1 class="mb-4 text-center">🎓 Cursos Realizados</h1>
-    <p class="text-center mb-5 text-muted">
-        Formación académica y cursos complementarios realizados a lo largo de mi proceso de aprendizaje.
-    </p>
+<main class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold">🎓 Cursos Realizados</h1>
+        <p class="lead text-muted">Formación académica y certificaciones obtenidas durante mi proceso de aprendizaje.</p>
+        <hr class="mx-auto" style="width: 100px; height: 3px; background: #0d6efd;">
+    </div>
 
-    <div class="row">
-        <div class="col-md-5" style="max-height: 85vh; overflow-y: auto; padding-right: 20px;">
-            {% for curso in cursos %}
-            <div class="card mb-4 shadow-sm curso-card"
-                 style="cursor: pointer;"
-                 {% if curso.rutacertificado %}
-                 data-url="{{ curso.rutacertificado.url }}"
-                 {% else %}
-                 data-url=""
-                 {% endif %}
-                 data-nombre="{{ curso.nombrecurso }}"
-                 onclick="verCertificado(this.getAttribute('data-url'), this.getAttribute('data-nombre'))">
-
-                <div class="card-body">
-                    <h5 class="fw-bold text-primary mb-1">{{ curso.nombrecurso }}</h5>
+    <div class="row g-4">
+        {% for curso in cursos %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm curso-card">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="fw-bold text-primary mb-0">{{ curso.nombrecurso }}</h5>
+                        <span class="badge-horas">{{ curso.totalhoras }}h</span>
+                    </div>
+                    
                     <div class="text-muted small mb-3">
                         <i class="bi bi-building"></i> {{ curso.entidadpatrocinadora }} <br>
                         <i class="bi bi-calendar3"></i> {{ curso.fechainicio|date:"M Y" }} — {{ curso.fechafin|date:"M Y" }}
                     </div>
 
-                    <p class="card-text mb-3" style="color: #333; font-size: 0.95rem;">
+                    <p class="card-text mb-4 text-secondary" style="font-size: 0.95rem;">
                         {{ curso.descripcioncurso }}
                     </p>
 
-                    <div class="info-contacto mb-3">
-                        <strong><i class="bi bi-person-badge"></i> Contacto:</strong> {{ curso.nombrecontactoauspicia }}<br>
-                        <strong><i class="bi bi-envelope"></i> Email:</strong> {{ curso.emailempresapatrocinadora }}
+                    <div class="info-contacto mb-4 mt-auto">
+                        <div class="mb-1"><strong><i class="bi bi-person-badge"></i></strong> {{ curso.nombrecontactoauspicia }}</div>
+                        <div class="text-truncate"><strong><i class="bi bi-envelope"></i></strong> {{ curso.emailempresapatrocinadora }}</div>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-dark">Horas: {{ curso.totalhoras }}</span>
-                        
-                        {% if curso.rutacertificado %}
-                        <div>
-                            <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-outline-primary" download onclick="event.stopPropagation();">
-                                <i class="bi bi-download"></i>
-                            </a>
-                            <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-link text-decoration-none" target="_blank" onclick="event.stopPropagation();">
-                                <i class="bi bi-box-arrow-up-right"></i> Ver aparte
-                            </a>
-                        </div>
-                        {% endif %}
+                    {% if curso.rutacertificado %}
+                    <div class="d-grid gap-2">
+                        <a href="{{ curso.rutacertificado.url }}" class="btn btn-primary btn-sm" target="_blank">
+                            <i class="bi bi-eye"></i> Ver Certificado
+                        </a>
+                        <a href="{{ curso.rutacertificado.url }}" class="btn btn-outline-dark btn-sm" download>
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </a>
                     </div>
-                </div>
-            </div>
-            {% empty %}
-            <div class="alert alert-info text-center">Aún no hay cursos registrados.</div>
-            {% endfor %}
-        </div>
-
-        <div class="col-md-7">
-            <div class="card shadow-lg sticky-top" style="top: 20px; height: 80vh; border-radius: 15px; overflow: hidden; border: none;">
-                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <span id="titulo-visor" class="fw-bold">Visor de Certificado</span>
-                    <i class="bi bi-file-earmark-pdf"></i>
-                </div>
-                <div class="card-body p-0 bg-secondary" id="contenedor-visor">
-                    <div class="h-100 d-flex flex-column align-items-center justify-content-center text-white p-5 text-center">
-                        <i class="bi bi-cursor-fill mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
-                        <h5>Selecciona un curso de la lista</h5>
-                        <p class="small opacity-75">Haz clic en una tarjeta para cargar el documento aquí</p>
-                    </div>
+                    {% else %}
+                    <button class="btn btn-light btn-sm disabled">
+                        <i class="bi bi-info-circle"></i> Sin certificado adjunto
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-info shadow-sm">
+                <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
+                Aún no hay cursos registrados para mostrar.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{% url 'home' %}" class="btn btn-link text-decoration-none text-dark">
+            <i class="bi bi-arrow-left"></i> Volver al Inicio
+        </a>
     </div>
 </main>
-
-<script>
-function verCertificado(url, nombre) {
-    if (!url || url === 'None' || url === '') {
-        alert("Este curso no tiene un certificado adjunto.");
-        return;
-    }
-
-    const contenedor = document.getElementById('contenedor-visor');
-    document.getElementById('titulo-visor').innerText = "Viendo: " + nombre;
-    contenedor.innerHTML = '';
-
-    if (url.toLowerCase().endsWith('.pdf')) {
-        contenedor.innerHTML = `<embed src="${url}" type="application/pdf" width="100%" height="100%" />`;
-    } else {
-        contenedor.innerHTML = `
-            <div class="h-100 d-flex align-items-center justify-content-center bg-dark p-2">
-                <img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-            </div>`;
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    const primeraCard = document.querySelector('.curso-card[data-url]:not([data-url=""])');
-    if (primeraCard) {
-        verCertificado(primeraCard.getAttribute('data-url'), primeraCard.getAttribute('data-nombre'));
-    }
-});
-</script>
 {% endblock %}
