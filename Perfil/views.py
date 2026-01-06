@@ -10,6 +10,7 @@ from .models import (
 )
 
 def get_active_profile():
+    """Busca el perfil marcado como activo (1)."""
     return DatosPersonales.objects.filter(perfilactivo=1).first()
 
 def home(request):
@@ -27,48 +28,54 @@ def home(request):
 
 def experiencia(request):
     perfil = get_active_profile()
-    datos = ExperienciaLaboral.objects.filter(
+    # Nombre 'experiencias' para coincidir con {% for exp in experiencias %}
+    experiencias = ExperienciaLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'experiencia.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'experiencia.html', {'experiencias': experiencias, 'perfil': perfil})
 
 def productos_academicos(request):
     perfil = get_active_profile()
-    datos = ProductoAcademico.objects.filter(
+    # Nombre 'productos' para el template
+    productos = ProductoAcademico.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'productos_academicos.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'productos_academicos.html', {'productos': productos, 'perfil': perfil})
 
 def productos_laborales(request):
     perfil = get_active_profile()
-    datos = ProductoLaboral.objects.filter(
+    # Nombre 'productos' para el template
+    productos = ProductoLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     ).order_by('-fechaproducto')
-    return render(request, 'productos_laborales.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'productos_laborales.html', {'productos': productos, 'perfil': perfil})
 
 def cursos(request):
     perfil = get_active_profile()
-    datos = CursoRealizado.objects.filter(
+    # Nombre 'cursos' para coincidir con {% for curso in cursos %}
+    cursos_list = CursoRealizado.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'cursos.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'cursos.html', {'cursos': cursos_list, 'perfil': perfil})
 
 def reconocimientos(request):
     perfil = get_active_profile()
-    datos = Reconocimiento.objects.filter(
+    # Nombre 'reconocimientos' para coincidir con {% for rec in reconocimientos %}
+    recs = Reconocimiento.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     ).order_by('-fechareconocimiento')
-    return render(request, 'reconocimientos.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'reconocimientos.html', {'reconocimientos': recs, 'perfil': perfil})
 
 def garage(request):
     perfil = get_active_profile()
-    datos = VentaGarage.objects.filter(
+    # Nombre 'items' para el template
+    items = VentaGarage.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'garage.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'garage.html', {'items': items, 'perfil': perfil})
