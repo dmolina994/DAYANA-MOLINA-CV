@@ -5,7 +5,7 @@ from .models import (
 )
 
 def get_active_profile():
-    # Buscamos el perfil activo marcado con '1'
+    # Busca el perfil activo (marcado con 1)
     return DatosPersonales.objects.filter(perfilactivo=1).first()
 
 def home(request):
@@ -23,35 +23,36 @@ def home(request):
 
 def productos_laborales(request):
     perfil = get_active_profile()
-    # Enviamos 'productos_laborales' para que el HTML lo reconozca
+    # Nombre clave: 'productos_laborales'
     datos = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechaproducto')
     return render(request, 'productos_laborales.html', {'productos_laborales': datos, 'perfil': perfil})
 
 def productos_academicos(request):
     perfil = get_active_profile()
-    # Si en tu productos_academicos.html usas {% for producto in productos_academicos %}
+    # Nombre clave: 'productos_academicos'
     datos = ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
     return render(request, 'productos_academicos.html', {'productos_academicos': datos, 'perfil': perfil})
 
 def garage(request):
     perfil = get_active_profile()
-    # Enviamos 'garage_items' para que coincida con tu HTML
+    # Nombre clave: 'garage_items'
     datos = VentaGarage.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
     return render(request, 'ventagarage.html', {'garage_items': datos, 'perfil': perfil})
 
 def cursos(request):
     perfil = get_active_profile()
-    # Enviamos 'cursos' para cursos.html
+    # Nombre clave: 'cursos'
     datos = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
     return render(request, 'cursos.html', {'cursos': datos, 'perfil': perfil})
 
 def reconocimientos(request):
     perfil = get_active_profile()
-    # Enviamos 'reconocimientos' para reconocimientos.html
+    # Nombre clave: 'reconocimientos'
     datos = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechareconocimiento')
     return render(request, 'reconocimientos.html', {'reconocimientos': datos, 'perfil': perfil})
 
 def experiencia(request):
     perfil = get_active_profile()
+    # Nombre clave: 'experiencias'
     datos = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
     return render(request, 'experiencia.html', {'experiencias': datos, 'perfil': perfil})

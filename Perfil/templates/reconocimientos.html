@@ -1,14 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .rec-card {
+        transition: all 0.3s ease;
+        border: none !important;
+        border-left: 5px solid #ffc107 !important; /* Borde amarillo/oro para reconocimientos */
+        background: #fff;
+    }
+    .rec-card:hover {
+        transform: translateX(10px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+</style>
+
 <main class="container-fluid py-5 px-4">
     <h1 class="text-center mb-4">🏅 Reconocimientos Académicos</h1>
 
     <div class="row">
-        <div class="col-md-5" style="max-height: 80vh; overflow-y: auto;">
+        <div class="col-md-5" style="max-height: 85vh; overflow-y: auto; padding-right: 20px;">
             {% for reconocimiento in reconocimientos %}
-            <div class="card mb-4 shadow-sm curso-card" 
-                 style="cursor: pointer; transition: 0.2s;"
+            <div class="card mb-4 shadow-sm rec-card" 
+                 style="cursor: pointer;"
                  {% if reconocimiento.rutacertificado %}
                  data-url="{{ reconocimiento.rutacertificado.url }}" 
                  onclick="forzarCargaPDF(this.getAttribute('data-url'), this.getAttribute('data-nombre'))"
@@ -18,47 +31,46 @@
                  data-nombre="{{ reconocimiento.tiporeconocimiento }}">
                 
                 <div class="card-body">
-                    <h5 class="card-title text-primary">{{ reconocimiento.tiporeconocimiento }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        {{ reconocimiento.entidadpatrocinadora }} 
+                    <h5 class="fw-bold text-warning mb-1" style="filter: brightness(0.8);">{{ reconocimiento.tiporeconocimiento }}</h5>
+                    <h6 class="text-muted small mb-3">
+                        <i class="bi bi-award"></i> {{ reconocimiento.entidadpatrocinadora }} 
                         {% if reconocimiento.fechareconocimiento %}
-                            · {{ reconocimiento.fechareconocimiento|date:"Y" }}
+                             · {{ reconocimiento.fechareconocimiento|date:"Y" }}
                         {% endif %}
                     </h6>
 
-                    <p class="card-text mt-3" style="color: black;">
+                    <p class="card-text mb-4" style="color: #333; font-size: 0.95rem; line-height: 1.5;">
                         {{ reconocimiento.descripcionreconocimiento|linebreaksbr }}
                     </p>
 
                     {% if reconocimiento.rutacertificado %}
-                    <div class="mt-3 text-center">
-                        <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-primary shadow-sm" download>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-outline-warning" download onclick="event.stopPropagation();">
                             <i class="bi bi-download"></i> Descargar
                         </a>
-                        <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-link" target="_blank" onclick="event.stopPropagation();">
-                            Abrir en pestaña nueva
-                        </a>
+                        <button class="btn btn-sm btn-warning text-white">
+                            <i class="bi bi-eye"></i> Ver Certificado
+                        </button>
                     </div>
                     {% else %}
-                    <div class="mt-3 text-center text-muted small">
-                        <i class="bi bi-info-circle"></i> Sin certificado adjunto
-                    </div>
+                    <div class="text-muted small italic"><i class="bi bi-info-circle"></i> Sin documento adjunto</div>
                     {% endif %}
                 </div>
             </div>
             {% empty %}
-            <div class="alert alert-info text-center">No hay reconocimientos registrados.</div>
+            <div class="alert alert-warning text-center">No hay reconocimientos registrados aún.</div>
             {% endfor %}
         </div>
 
         <div class="col-md-7">
-            <div class="card shadow-sm sticky-top" style="top: 20px; height: 80vh; border: none;">
-                <div class="card-header bg-dark text-white">
-                    <span id="titulo-visor">Visor de Documento</span>
+            <div class="card shadow-lg sticky-top" style="top: 20px; height: 80vh; border-radius: 15px; overflow: hidden; border: none;">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <span id="titulo-visor" class="fw-bold">Visor de Documento</span>
+                    <i class="bi bi-patch-check"></i>
                 </div>
-                <div class="card-body p-0 bg-secondary" id="contenedor-visor" style="height: 100%;">
-                    <div class="h-100 d-flex align-items-center justify-content-center text-white-50">
-                        <p>Selecciona un reconocimiento para ver el certificado</p>
+                <div class="card-body p-0 bg-secondary" id="contenedor-visor">
+                    <div class="h-100 d-flex align-items-center justify-content-center text-white-50 text-center p-5">
+                        <p>Selecciona un reconocimiento para visualizar el certificado oficial</p>
                     </div>
                 </div>
             </div>
@@ -75,18 +87,17 @@ function forzarCargaPDF(url, nombre) {
     contenedor.innerHTML = '';
 
     if (url.toLowerCase().endsWith('.pdf')) {
-        // CAMBIO: Ahora carga el PDF directamente en el visor
         contenedor.innerHTML = `<embed src="${url}" type="application/pdf" width="100%" height="100%" />`;
     } else {
         contenedor.innerHTML = `
-            <div class="h-100 d-flex align-items-center justify-content-center bg-dark">
-                <img src="${url}" style="max-width: 95%; max-height: 95%; object-fit: contain;">
+            <div class="h-100 d-flex align-items-center justify-content-center bg-dark p-2">
+                <img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
             </div>`;
     }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    const primeraCard = document.querySelector('.curso-card[data-url]:not([data-url=""])');
+    const primeraCard = document.querySelector('.rec-card[data-url]:not([data-url=""])');
     if (primeraCard) {
         forzarCargaPDF(primeraCard.getAttribute('data-url'), primeraCard.getAttribute('data-nombre'));
     }
