@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container py-5">
+
+    <h1 class="mb-4 text-center">
+        💼 Experiencia Laboral
+    </h1>
+
+    <p class="text-center mb-5" style="color: black;">
+        Experiencia académica y práctica adquirida a lo largo de mi proceso de formación profesional.
+    </p>
+
+    <div class="row">
+        {% for exp in experiencias %}
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">
+                        {{ exp.cargodesempenado }}
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        {{ exp.nombrempresa }} | {{ exp.lugarempresa }}
+                    </h6>
+
+                    <p class="text-muted mb-3">
+                        <small>
+                            {{ exp.fechainiciogestion|date:"M Y" }} - 
+                            {% if exp.fechafingestion %}
+                                {{ exp.fechafingestion|date:"M Y" }}
+                            {% else %}
+                                Actualidad
+                            {% endif %}
+                        </small>
+                    </p>
+
+                    <p class="card-text" style="color: black;">
+                        <strong>Funciones:</strong> {{ exp.descripcionfunciones }}
+                    </p>
+
+                    <div class="mt-3 p-3 bg-light rounded" style="font-size: 0.9em; border-left: 4px solid #0d6efd;">
+                        <p class="mb-1"><strong>Contacto:</strong> {{ exp.nombrecontactoempresarial }}</p>
+                        <p class="mb-1"><strong>Teléfono:</strong> {{ exp.telefonocontactoempresarial }}</p>
+                        <p class="mb-0"><strong>Email:</strong> {{ exp.emailempresa }}</p>
+                    </div>
+
+                    {% if exp.rutacertificado %}
+                    <div class="mt-3">
+                        <a href="{{ exp.rutacertificado.url }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                            Ver Certificado Laboral
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="alert alert-info">Aún no hay experiencias laborales registradas.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'home' %}" class="btn btn-outline-dark">Volver al inicio</a>
+    </div>
+</main>
+{% endblock %}

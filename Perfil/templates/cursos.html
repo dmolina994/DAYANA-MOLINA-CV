@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container-fluid py-5 px-4">
+    <h1 class="mb-4 text-center">🎓 Cursos Realizados</h1>
+    <p class="text-center mb-5" style="color: black;">
+        Formación académica y cursos complementarios realizados a lo largo de mi proceso de aprendizaje.
+    </p>
+
+    <div class="row">
+        <div class="col-md-5" style="max-height: 80vh; overflow-y: auto;">
+            {% for curso in cursos %}
+            <div class="card mb-4 shadow-sm border-start border-4 border-primary curso-card" 
+                 style="cursor: pointer; transition: transform 0.2s;"
+                 data-url="{{ curso.rutacertificado.url }}" 
+                 data-nombre="{{ curso.nombrecurso }}"
+                 onclick="verCertificado(this.getAttribute('data-url'), this.getAttribute('data-nombre'))">
+                
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ curso.nombrecurso }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        {{ curso.entidadpatrocinadora }} · {{ curso.fechafin|date:"Y" }}
+                    </h6>
+
+                    <p class="card-text mt-3" style="color: black;">
+                        <strong>Descripción:</strong> {{ curso.descripcioncurso }}
+                    </p>
+
+                    <div class="mt-3 p-3 bg-light rounded" style="font-size: 0.9em; border-left: 4px solid #dee2e6;">
+                        <p class="mb-1"><strong>Contacto:</strong> {{ curso.nombrecontactoauspicia }}</p>
+                        <p class="mb-1"><strong>Teléfono:</strong> {{ curso.telefonocontactoauspicia }}</p>
+                        <p class="mb-0"><strong>Email Empresa:</strong> {{ curso.emailempresapatrocinadora }}</p>
+                    </div>
+
+                    <p class="card-text mt-3 text-end" style="color: black;">
+                        <span class="badge bg-secondary">Duración: {{ curso.totalhoras }} horas.</span>
+                    </p>
+
+                    {% if curso.rutacertificado %}
+                    <div class="mt-2 text-center">
+                        <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-primary shadow-sm" download>
+                            <i class="bi bi-download"></i> Descargar
+                        </a>
+                        
+                        <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-link" target="_blank" onclick="event.stopPropagation();">
+                            Abrir en pestaña nueva
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info text-center">Aún no hay cursos activos.</div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-7">
+            <div class="card shadow-sm sticky-top" style="top: 20px; height: 80vh; border: none;">
+                <div class="card-header bg-dark text-white">
+                    <span id="titulo-visor">Visor de Certificado</span>
+                </div>
+                <div class="card-body p-0 bg-secondary d-flex align-items-center justify-content-center" id="contenedor-visor" style="overflow: hidden;">
+                    <div class="text-center text-white p-5" id="mensaje-inicial">
+                        <i class="bi bi-file-pdf fa-4x mb-3"></i>
+                        <p>Selecciona un curso para ver el documento.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'home' %}" class="btn btn-outline-dark">Volver al inicio</a>
+    </div>
+</main>
+
+<script>
+function verCertificado(url, nombre) {
+    if (!url || url === 'None' || url === '') return;
+    
+    const contenedor = document.getElementById('contenedor-visor');
+    const titulo = document.getElementById('titulo-visor');
+    titulo.innerText = "Viendo: " + nombre;
+
+    // Limpiar el contenedor antes de decidir qué mostrar
+    contenedor.innerHTML = '';
+
+    if (url.toLowerCase().endsWith('.pdf')) {
+        // No cargamos el iframe para evitar el error de conexión
+        contenedor.innerHTML = `
+            <div class="text-center text-white p-4">
+                <i class="bi bi-file-earmark-pdf mb-3" style="font-size: 3rem; opacity: 0.7;"></i>
+                <p>El certificado es un archivo <strong>PDF</strong>.<br>
+                Por favor, utiliza los botones de la tarjeta lateral para <strong>Descargar</strong> o <strong>Abrir</strong> el documento.</p>
+            </div>`;
+    } else {
+        // Si es una imagen, se muestra normalmente
+        contenedor.innerHTML = `<img src="${url}" style="max-width: 95%; max-height: 95%; object-fit: contain;" />`;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Solo carga el primero si hay tarjetas disponibles
+    const primeraCard = document.querySelector('.curso-card');
+    if (primeraCard) {
+        const url = primeraCard.getAttribute('data-url');
+        const nombre = primeraCard.getAttribute('data-nombre');
+        verCertificado(url, nombre);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container-fluid py-5 px-4">
+    <h1 class="text-center mb-4">🏅 Reconocimientos Académicos</h1>
+
+    <div class="row">
+        <div class="col-md-5" style="max-height: 80vh; overflow-y: auto;">
+            {% for reconocimiento in reconocimientos %}
+            <div class="card mb-4 shadow-sm curso-card" 
+                 style="cursor: pointer; transition: 0.2s;"
+                 {% if reconocimiento.rutacertificado %}
+                 data-url="{{ reconocimiento.rutacertificado.url }}" 
+                 onclick="forzarCargaPDF(this.getAttribute('data-url'), this.getAttribute('data-nombre'))"
+                 {% else %}
+                 data-url=""
+                 {% endif %}
+                 data-nombre="{{ reconocimiento.tiporeconocimiento }}">
+                
+                <div class="card-body">
+                    <h5 class="card-title text-primary">{{ reconocimiento.tiporeconocimiento }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        {{ reconocimiento.entidadpatrocinadora }} 
+                        {% if reconocimiento.fechareconocimiento %}
+                            · {{ reconocimiento.fechareconocimiento|date:"Y" }}
+                        {% endif %}
+                    </h6>
+
+                    <p class="card-text mt-3" style="color: black;">
+                        {{ reconocimiento.descripcionreconocimiento|linebreaksbr }}
+                    </p>
+
+                    {% if reconocimiento.rutacertificado %}
+                    <div class="mt-3 text-center">
+                        <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-primary shadow-sm" download>
+                            <i class="bi bi-download"></i> Descargar
+                        </a>
+                        <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-link" target="_blank" onclick="event.stopPropagation();">
+                            Abrir en pestaña nueva
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="mt-3 text-center text-muted small">
+                        <i class="bi bi-info-circle"></i> Sin certificado adjunto
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info text-center">No hay reconocimientos registrados.</div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-7">
+            <div class="card shadow-sm sticky-top" style="top: 20px; height: 80vh; border: none;">
+                <div class="card-header bg-dark text-white">
+                    <span id="titulo-visor">Visor de Documento</span>
+                </div>
+                <div class="card-body p-0 bg-secondary" id="contenedor-visor" style="height: 100%;">
+                    <div class="h-100 d-flex align-items-center justify-content-center text-white-50">
+                        <p>Selecciona un reconocimiento para ver el certificado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+function forzarCargaPDF(url, nombre) {
+    if (!url || url === 'None' || url === '') return;
+    
+    document.getElementById('titulo-visor').innerText = "Viendo: " + nombre;
+    const contenedor = document.getElementById('contenedor-visor');
+    
+    contenedor.innerHTML = '';
+
+    // Si es PDF, NO intentamos cargarlo en un iframe para evitar el error de conexión
+    if (url.toLowerCase().endsWith('.pdf')) {
+        contenedor.innerHTML = `
+            <div class="h-100 d-flex flex-column align-items-center justify-content-center text-white p-4">
+                <i class="bi bi-file-earmark-pdf mb-3" style="font-size: 3rem;"></i>
+                <p class="text-center">Este documento es un PDF.<br>Utilice los botones de la tarjeta para <b>Descargar</b> o <b>Abrir</b> en una pestaña nueva.</p>
+            </div>`;
+    } else {
+        // Si NO es PDF (es imagen), se muestra en el visor
+        contenedor.innerHTML = `
+            <div class="h-100 d-flex align-items-center justify-content-center bg-dark">
+                <img src="${url}" style="max-width: 95%; max-height: 95%; object-fit: contain;">
+            </div>`;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const primeraCard = document.querySelector('.curso-card[data-url]:not([data-url=""])');
+    if (primeraCard) {
+        const url = primeraCard.getAttribute('data-url');
+        const nombre = primeraCard.getAttribute('data-nombre');
+        forzarCargaPDF(url, nombre);
+    }
+});
+</script>
+{% endblock %}

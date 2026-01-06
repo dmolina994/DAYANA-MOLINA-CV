@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - {{ perfil.nombres }}{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        
+        <h2 class="mb-2" style="color: var(--rosa-fuerte);">Información Personal</h2>
+        <p class="text-muted mb-4">Detalle completo del perfil profesional.</p>
+
+        <div class="alert alert-light border" role="alert" style="border-left: 5px solid var(--rosa-boton) !important;">
+            <h5 class="alert-heading text-dark">Sobre mí</h5>
+            <p class="mb-0">{{ perfil.descripcionperfil }}</p>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <h5 class="mb-3 text-secondary">🪪 Identificación</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Cédula:</strong> {{ perfil.numerocedula }}</li>
+                    <li class="list-group-item"><strong>Nacionalidad:</strong> {{ perfil.nacionalidad }}</li>
+                    <li class="list-group-item"><strong>Lugar Nacimiento:</strong> {{ perfil.lugarnacimiento|default:"No registrado" }}</li>
+                    
+                    <li class="list-group-item">
+                        <strong>Fecha Nacimiento:</strong>
+                        <span>{{ perfil.fechanacimiento|date:"d" }} de {{ perfil.fechanacimiento|date:"F, Y" }}</span>
+                    </li>
+
+                    <li class="list-group-item"><strong>Sexo:</strong> {{ perfil.get_sexo_display }}</li>
+                </ul>
+            </div>
+
+            <div class="col-md-6">
+                <h5 class="mb-3 text-secondary">📞 Contacto</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Estado Civil:</strong> {{ perfil.estadocivil }}</li>
+                    <li class="list-group-item"><strong>Licencia:</strong> {{ perfil.licenciaconducir|default:"Ninguna" }}</li>
+                    <li class="list-group-item"><strong>Teléfonos:</strong> {{ perfil.telefonoconvencional }} / {{ perfil.telefonofijo }}</li>
+                    <li class="list-group-item">
+                        <strong>Web:</strong>
+                        {% if perfil.sitioweb %}
+                            <a href="{{ perfil.sitioweb }}" target="_blank" style="color: var(--rosa-fuerte);">Visitar</a>
+                        {% else %}
+                            --
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="p-3 bg-light rounded h-100">
+                    <strong>🏠 Domicilio:</strong><br>
+                    <span class="text-muted">{{ perfil.direcciondomiciliaria }}</span>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="p-3 bg-light rounded h-100">
+                    <strong>🏢 Trabajo:</strong><br>
+                    <span class="text-muted">{{ perfil.direcciontrabajo|default:"No registrada" }}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

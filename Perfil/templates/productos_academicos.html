@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container py-5">
+
+    <h1 class="text-center mb-4">
+        📚 Productos Académicos
+    </h1>
+
+    <p class="text-center mb-5" style="color: black;">
+        Trabajos, investigaciones y proyectos destacados desarrollados 
+        durante mi formación académica.
+    </p>
+
+    <div class="row">
+
+        {% for producto in productos_academicos %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ producto.nombrerecurso }}
+                    </h5>
+                    
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        {{ producto.clasificador|default:"General" }}
+                    </h6>
+                    
+                    <p class="card-text mt-3" style="color: black;">
+                        {{ producto.descripcion|linebreaksbr }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center" role="alert">
+                Aún no hay productos académicos activos para mostrar.
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'home' %}" class="btn btn-outline-dark">
+            Volver al inicio
+        </a>
+    </div>
+
+</main>
+{% endblock %}

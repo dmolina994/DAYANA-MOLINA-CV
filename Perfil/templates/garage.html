@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Garage - {{ perfil.nombres }}{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4" style="color: var(--rosa-fuerte);">🛒 Venta de Garage</h2>
+<p class="mb-5">Artículos en buen estado. ¡Echa un vistazo a lo disponible!</p>
+
+<div class="row">
+    {% for item in garage_items %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            
+            <div style="height: 200px; overflow: hidden; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                {% if item.foto %}
+                    <img src="{{ item.foto.url }}" alt="{{ item.nombreproducto }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                    <span style="font-size: 3rem;">📦</span>
+                {% endif %}
+            </div>
+
+            <div class="card-body">
+                <h5 class="card-title text-dark">{{ item.nombreproducto }}</h5>
+                
+                <span class="badge rounded-pill bg-info text-dark mb-2">{{ item.estadoproducto }}</span>
+                
+                <h4 class="mt-2" style="color: var(--rosa-fuerte);">${{ item.valordelbien }}</h4>
+                
+                <p class="card-text small text-muted mt-3">
+                    {{ item.descripcion|default:"Sin descripción." }}
+                </p>
+            </div>
+            
+            </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center">
+        <h4 class="text-muted">No hay artículos disponibles por el momento.</h4>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

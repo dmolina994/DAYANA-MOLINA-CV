@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container py-5">
+
+    <h1 class="text-center mb-4">
+        💼 Productos Laborales
+    </h1>
+
+    <p class="text-center mb-5" style="color: black;">
+        Proyectos y productos desarrollados aplicando conocimientos
+        técnicos y profesionales.
+    </p>
+
+    <div class="row">
+
+        {% for producto in productos_laborales %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">
+                        {{ producto.nombreproducto }}
+                    </h5>
+                    
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        Fecha: {{ producto.fechaproducto|date:"d/m/Y" }}
+                    </h6>
+                    
+                    <p class="card-text mt-3" style="color: black;">
+                        <strong>Descripción:</strong><br>
+                        {{ producto.descripcion|linebreaksbr }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center" role="alert">
+                Aún no hay productos laborales activos para mostrar.
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'home' %}" class="btn btn-outline-dark">
+            Volver al inicio
+        </a>
+    </div>
+
+</main>
+{% endblock %}
