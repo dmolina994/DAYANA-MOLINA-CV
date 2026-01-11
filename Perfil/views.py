@@ -3,6 +3,7 @@ from .models import (
     DatosPersonales, ExperienciaLaboral, CursoRealizado, 
     VentaGarage, Reconocimiento, ProductoAcademico, ProductoLaboral
 )
+
 def get_active_profile():
     perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
     if perfil is None:
@@ -10,21 +11,19 @@ def get_active_profile():
         perfil = DatosPersonales.objects.first()
     return perfil
 
-def hoja_de_vida_completa(request):
-    perfil = get_active_profile()
 
+def home(request):
+    perfil = get_active_profile()
     context = {
         'perfil': perfil,
-        'experiencias': ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True),
-        'cursos': CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True),
-        'garage_items': VentaGarage.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True),
-        'reconocimientos': Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True),
-        'productos_academicos': ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True),
-        'productos_laborales': ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True),
+        'resumen_exp': ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil)[:3],
+        'resumen_cursos': CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil)[:3],
+        'resumen_garage': VentaGarage.objects.filter(idperfilconqueestaactivo=perfil)[:5],
+        'resumen_rec': Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil)[:3],
+        'resumen_acad': ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil)[:3],
+        'resumen_lab': ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil)[:3],
     }
-
-    return render(request, "hoja_completa.html", context)
-
+    return render(request, 'home.html', context)
 
 def productos_laborales(request):
     perfil = get_active_profile()
