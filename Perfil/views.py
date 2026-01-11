@@ -5,12 +5,8 @@ from .models import (
 )
 
 def get_active_profile():
-    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
-    if perfil is None:
-        # Si no existe uno activo, toma el primero
-        perfil = DatosPersonales.objects.first()
-    return perfil
-
+    # Busca el perfil activo (marcado con 1)
+    return DatosPersonales.objects.filter(perfilactivo=1).first()
 
 def home(request):
     perfil = get_active_profile()
@@ -60,3 +56,19 @@ def experiencia(request):
     # Nombre clave: 'experiencias'
     datos = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
     return render(request, 'experiencia.html', {'experiencias': datos, 'perfil': perfil})
+
+
+def generar_cv_pdf(request):
+    perfil = get_active_profile()
+    
+    # Obtenemos TODOS los datos sin límites para el PDF
+    context = {
+        'perfil': perfil,
+        'experiencias': ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechainiciogestion'),
+        'cursos': CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechafin'),
+        'reconocimientos': Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True),
+        'productos_acad': ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True),
+        'productos_lab': ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True),
+    }
+    
+    return render(request, 'hoja_de_vida.html', context)

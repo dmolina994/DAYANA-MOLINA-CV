@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page { size: A4; margin: 1.5cm; }
+        body { font-family: 'Helvetica', sans-serif; color: #333; line-height: 1.4; font-size: 11pt; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        .header h1 { margin: 0; color: #2c3e50; text-transform: uppercase; }
+        .foto-perfil { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #eee; }
+        
+        h2 { background-color: #f8f9fa; color: #2c3e50; padding: 5px 10px; border-left: 4px solid #2c3e50; font-size: 14pt; margin-top: 20px; }
+        .item { margin-bottom: 15px; page-break-inside: avoid; }
+        .item-title { font-weight: bold; font-size: 12pt; display: flex; justify-content: space-between; }
+        .date { color: #666; font-style: italic; }
+        
+        /* Contenedor de Certificados */
+        .cert-grid { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; }
+        .cert-card { width: 45%; border: 1px solid #ddd; padding: 5px; text-align: center; page-break-inside: avoid; }
+        .cert-card img { width: 100%; height: auto; max-height: 200px; object-fit: contain; }
+        .cert-card p { font-size: 9pt; margin: 5px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        {% if perfil.foto %}
+            <img src="{{ perfil.foto.url }}" class="foto-perfil">
+        {% endif %}
+        <h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
+        <p>{{ perfil.nacionalidad }} | ID: {{ perfil.numerocedula }} | {{ perfil.sitioweb|default:"" }}</p>
+        <p>Tel: {{ perfil.telefonofijo }} / {{ perfil.telefonoconvencional }} | {{ perfil.direcciondomiciliaria }}</p>
+    </div>
+
+    <h2>Experiencia Laboral</h2>
+    {% for exp in experiencias %}
+    <div class="item">
+        <div class="item-title">
+            <span>{{ exp.cargodesempenado }} - {{ exp.nombrempresa }}</span>
+            <span class="date">{{ exp.fechainiciogestion|date:"M Y" }} - {% if exp.fechafingestion %}{{ exp.fechafingestion|date:"M Y" }}{% else %}Actualidad{% endif %}</span>
+        </div>
+        <p>{{ exp.descripcionfunciones }}</p>
+    </div>
+    {% endfor %}
+
+    <h2>Cursos y Formación</h2>
+    {% for curso in cursos %}
+    <div class="item">
+        <div class="item-title">
+            <span>{{ curso.nombrecurso }} ({{ curso.totalhoras }} horas)</span>
+            <span class="date">{{ curso.fechafin|date:"Y" }}</span>
+        </div>
+        <p>{{ curso.entidadpatrocinadora }}</p>
+        {% if curso.rutacertificado %}
+        <div class="cert-grid">
+            <div class="cert-card">
+                <img src="{{ curso.rutacertificado.url }}">
+                <p>Certificado de {{ curso.nombrecurso }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <h2>Reconocimientos</h2>
+    <div class="cert-grid">
+        {% for rec in reconocimientos %}
+        <div class="cert-card">
+            {% if rec.rutacertificado %}
+                <img src="{{ rec.rutacertificado.url }}">
+            {% endif %}
+            <p><strong>{{ rec.tiporeconocimiento }}</strong><br>{{ rec.descripcionreconocimiento }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
