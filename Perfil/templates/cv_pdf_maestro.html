@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* SE CORRIGIÓ: Eliminación de sub-reglas en @page para compatibilidad */
+        /* Optimización de página para evitar saltos en blanco */
         @page { 
             size: letter; 
-            margin: 1.5cm; 
+            margin: 1cm 1.5cm; 
         }
         body { 
             font-family: Helvetica, Arial, sans-serif; 
             color: #333; 
-            line-height: 1.3; 
+            line-height: 1.2; 
             font-size: 9pt; 
+            margin: 0;
+            padding: 0;
         }
         
         .section-title { 
@@ -21,26 +23,34 @@
             font-size: 10pt; 
             color: #ad1457; 
             background-color: #fdf2f8; 
-            padding: 5px 10px; 
-            margin-top: 12px; 
-            margin-bottom: 6px;
+            padding: 4px 10px; 
+            margin-top: 10px; 
+            margin-bottom: 5px;
             border-left: 4px solid #ad1457;
+            /* Evita que el título quede solo al final de una página */
+            page-break-after: avoid;
         }
 
-        .header-table { width: 100%; border-bottom: 2px solid #ad1457; margin-bottom: 15px; }
-        .name { font-size: 22pt; font-weight: bold; color: #ad1457; text-transform: uppercase; }
-        .photo { width: 85px; height: 85px; border-radius: 40px; border: 2px solid #f8bbd0; }
+        .header-table { width: 100%; border-bottom: 2px solid #ad1457; margin-bottom: 10px; }
+        .name { font-size: 20pt; font-weight: bold; color: #ad1457; text-transform: uppercase; }
+        .photo { width: 80px; height: 80px; border-radius: 40px; border: 2px solid #f8bbd0; }
 
-        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-        .label { font-weight: bold; width: 30%; color: #ad1457; vertical-align: top; padding: 2px 0; }
-        .value { width: 70%; padding: 2px 0; }
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
+        .label { font-weight: bold; width: 25%; color: #ad1457; vertical-align: top; padding: 1px 0; }
+        .value { width: 75%; padding: 1px 0; }
 
-        .item-box { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .item-box { 
+            margin-bottom: 8px; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 4px; 
+            page-break-inside: avoid; /* Evita que un curso se parta en dos páginas */
+        }
         .item-title { font-weight: bold; font-size: 10pt; color: #222; }
-        .item-sub { color: #d81b60; font-weight: bold; }
-        .contact-box { font-size: 8pt; color: #666; background: #fafafa; padding: 5px; margin-top: 3px; }
+        .item-sub { color: #d81b60; font-weight: bold; font-size: 9pt; }
+        .description-text { font-size: 8.5pt; color: #444; margin-top: 2px; text-align: justify; }
+        .contact-box { font-size: 8pt; color: #666; background: #fafafa; padding: 4px; margin-top: 3px; }
         
-        .footer-page { text-align: right; font-size: 8pt; color: #888; }
+        .footer-page { text-align: right; font-size: 8pt; color: #888; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -49,9 +59,9 @@
         <tr>
             <td width="80%">
                 <div class="name">{{ perfil.nombres }} {{ perfil.apellidos }}</div>
-                <div style="margin-top: 5px;">
+                <div style="margin-top: 3px;">
                     <strong>Cédula:</strong> {{ perfil.numerocedula }} | <strong>Nacionalidad:</strong> {{ perfil.nacionalidad }}<br>
-                    <strong>Email:</strong> {{ perfil.email_contacto }} | <strong>Web:</strong> {{ perfil.sitioweb|default:"N/A" }}
+                    <strong>Email:</strong> {{ perfil.email_contacto }} | <strong>Web:</strong> {{ perfil.sitiweb|default:"N/A" }}
                 </div>
             </td>
             <td width="20%" style="text-align: right;">
@@ -63,7 +73,7 @@
     </table>
 
     <div class="section-title">Perfil Profesional</div>
-    <div style="text-align: justify; margin-bottom: 10px;">{{ perfil.descripcionperfil }}</div>
+    <div style="text-align: justify; margin-bottom: 8px;">{{ perfil.descripcionperfil }}</div>
 
     <div class="section-title">Información Detallada</div>
     <table class="data-table">
@@ -91,7 +101,7 @@
         <div class="item-title">{{ exp.cargodesempenado }}</div>
         <div class="item-sub">{{ exp.nombrempresa }} — {{ exp.lugarempresa }}</div>
         <div style="font-size: 8.5pt; color: #888;">{{ exp.fechainiciogestion|date:"M Y" }} - {% if exp.fechafingestion %}{{ exp.fechafingestion|date:"M Y" }}{% else %}Actualidad{% endif %}</div>
-        <div style="margin-top: 3px;"><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</div>
+        <div class="description-text"><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</div>
         <div class="contact-box">
             <strong>Contacto Empresa:</strong> {{ exp.nombrecontactoempresarial }} | <strong>Telf:</strong> {{ exp.telefonocontactoempresarial }}
         </div>
@@ -102,13 +112,13 @@
     {% for pl in productos_laborales %}
         <div class="item-box">
             <div class="item-title">Laboral: {{ pl.nombreproducto }}</div>
-            <div style="font-size: 9pt;">{{ pl.descripcion }}</div>
+            <div class="description-text">{{ pl.descripcion }}</div>
         </div>
     {% endfor %}
     {% for pa in productos %}
         <div class="item-box">
             <div class="item-title">Académico: {{ pa.nombrerecurso }}</div>
-            <div style="font-size: 9pt;">{{ pa.descripcion }}</div>
+            <div class="description-text">{{ pa.descripcion }}</div>
         </div>
     {% endfor %}
 
@@ -117,7 +127,8 @@
     <div class="item-box">
         <div class="item-title">{{ curso.nombrecurso }} ({{ curso.totalhoras }} Horas)</div>
         <div class="item-sub">{{ curso.entidadpatrocinadora }}</div>
-        <div style="font-size: 8.5pt;">{{ curso.fechainicio|date:"d/m/Y" }} - {{ curso.fechafin|date:"d/m/Y" }}</div>
+        <div style="font-size: 8.5pt; color: #888;">{{ curso.fechainicio|date:"d/m/Y" }} - {{ curso.fechafin|date:"d/m/Y" }}</div>
+        <div class="description-text">{{ curso.descripcioncurso }}</div>
     </div>
     {% endfor %}
 
@@ -130,10 +141,6 @@
     </div>
     {% endfor %}
     {% endif %}
-
-    <div class="footer-page">
-        Página <pdf:pagenumber> de <pdf:pagecount>
-    </div>
 
 </body>
 </html>
