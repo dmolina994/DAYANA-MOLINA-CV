@@ -19,6 +19,8 @@ urlpatterns = [
     # 🔐 Auth
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    
+    # Esta es la ruta que genera el PDF con anexos
     path('descargar-cv/', views.generar_cv_pdf, name='generar_cv_pdf'),
 ]
 
