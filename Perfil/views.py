@@ -13,11 +13,14 @@ from Perfil.models import (
     ProductoAcademico, ProductoLaboral, VentaGarage
 )
 
+# --- Funciones Auxiliares ---
+
 def get_active_profile():
+    """Obtiene el perfil marcado como activo."""
     return DatosPersonales.objects.filter(perfilactivo=1).first()
 
-# Función auxiliar para convertir imagen de URL a Base64 (Para que el PDF la vea)
 def get_image_base64(url):
+    """Convierte imagen de URL a Base64 para que xhtml2pdf la renderice."""
     try:
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
@@ -27,6 +30,8 @@ def get_image_base64(url):
     except Exception:
         return None
     return None
+
+# --- Vistas Principales ---
 
 def home(request):
     perfil = get_active_profile()
@@ -44,22 +49,55 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
-# Vistas de navegación simples
-def experiencia(request): return render(request, 'experiencia.html', {'datos': ExperienciaLaboral.objects.all(), 'perfil': get_active_profile()})
-def productos_academicos(request): return render(request, 'productos_academicos.html', {'datos': ProductoAcademico.objects.all(), 'perfil': get_active_profile()})
-def productos_laborales(request): return render(request, 'productos_laborales.html', {'datos': ProductoLaboral.objects.all(), 'perfil': get_active_profile()})
-def cursos(request): return render(request, 'cursos.html', {'datos': CursoRealizado.objects.all(), 'perfil': get_active_profile()})
-def reconocimientos(request): return render(request, 'reconocimientos.html', {'datos': Reconocimiento.objects.all(), 'perfil': get_active_profile()})
-def garage(request): return render(request, 'garage.html', {'datos': VentaGarage.objects.all(), 'perfil': get_active_profile()})
+# --- Vistas de Navegación (CORREGIDAS) ---
+
+def experiencia(request):
+    perfil = get_active_profile()
+    # El HTML usa: {% for exp in experiencias %}
+    exp_list = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    return render(request, 'experiencia.html', {'experiencias': exp_list, 'perfil': perfil})
+
+def productos_academicos(request):
+    perfil = get_active_profile()
+    # El HTML usa: {% for producto in productos_academicos %}
+    prod_acad = ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    return render(request, 'productos_academicos.html', {'productos_academicos': prod_acad, 'perfil': perfil})
+
+def productos_laborales(request):
+    perfil = get_active_profile()
+    # El HTML usa: {% for producto in productos_laborales %}
+    prod_lab = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    return render(request, 'productos_laborales.html', {'productos_laborales': prod_lab, 'perfil': perfil})
+
+def cursos(request):
+    perfil = get_active_profile()
+    # El HTML usa: {% for curso in cursos %}
+    cursos_list = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    return render(request, 'cursos.html', {'cursos': cursos_list, 'perfil': perfil})
+
+def reconocimientos(request):
+    perfil = get_active_profile()
+    # El HTML usa: {% for reconocimiento in reconocimientos %}
+    reco_list = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    return render(request, 'reconocimientos.html', {'reconocimientos': reco_list, 'perfil': perfil})
+
+def garage(request):
+    perfil = get_active_profile()
+    # El HTML usa: {% for item in garage_items %}
+    items = VentaGarage.objects.all()
+    return render(request, 'garage.html', {'garage_items': items, 'perfil': perfil})
+
+# --- Generación de PDF ---
 
 def pdf_datos_personales(request):
     perfil = get_object_or_404(DatosPersonales, perfilactivo=1)
     
-    # PROCESAR FOTO PARA PDF (Solución al problema de la foto que no sale)
+    # Procesar foto para PDF
     foto_base64 = None
     if perfil.foto:
         foto_base64 = get_image_base64(perfil.foto.url)
 
+    # Obtener datos filtrados para el PDF
     experiencias = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
     academicos = ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
     laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
@@ -69,7 +107,7 @@ def pdf_datos_personales(request):
     template = get_template('cv_pdf_maestro.html')
     html = template.render({
         'perfil': perfil, 
-        'foto_pdf': foto_base64, # Usaremos esta variable en el HTML
+        'foto_pdf': foto_base64,
         'items': experiencias, 
         'productos': academicos,
         'productos_laborales': laborales, 
