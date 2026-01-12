@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* Configuración de página simplificada para evitar errores en Python 3.13 */
+        /* SE CORRIGIÓ: Eliminación de sub-reglas en @page para compatibilidad */
         @page { 
             size: letter; 
             margin: 1.5cm; 
@@ -15,7 +15,6 @@
             font-size: 9pt; 
         }
         
-        /* Estilos de Títulos y Secciones */
         .section-title { 
             font-weight: bold; 
             text-transform: uppercase; 
@@ -28,21 +27,20 @@
             border-left: 4px solid #ad1457;
         }
 
-        /* Encabezado Principal */
         .header-table { width: 100%; border-bottom: 2px solid #ad1457; margin-bottom: 15px; }
         .name { font-size: 22pt; font-weight: bold; color: #ad1457; text-transform: uppercase; }
         .photo { width: 85px; height: 85px; border-radius: 40px; border: 2px solid #f8bbd0; }
 
-        /* Tablas de Datos */
         .data-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
         .label { font-weight: bold; width: 30%; color: #ad1457; vertical-align: top; padding: 2px 0; }
         .value { width: 70%; padding: 2px 0; }
 
-        /* Bloques de Contenido */
         .item-box { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         .item-title { font-weight: bold; font-size: 10pt; color: #222; }
         .item-sub { color: #d81b60; font-weight: bold; }
         .contact-box { font-size: 8pt; color: #666; background: #fafafa; padding: 5px; margin-top: 3px; }
+        
+        .footer-page { text-align: right; font-size: 8pt; color: #888; }
     </style>
 </head>
 <body>
@@ -82,10 +80,6 @@
             <td class="value">Cat: {{ perfil.licenciaconducir }} | Telf: {{ perfil.telefonofijo }} / {{ perfil.telefonoconvencional }}</td>
         </tr>
         <tr>
-            <td class="label">Dirección Trabajo:</td>
-            <td class="value">{{ perfil.direcciontrabajo|default:"No registrada" }}</td>
-        </tr>
-        <tr>
             <td class="label">Domicilio:</td>
             <td class="value">{{ perfil.direcciondomiciliaria }}</td>
         </tr>
@@ -99,29 +93,24 @@
         <div style="font-size: 8.5pt; color: #888;">{{ exp.fechainiciogestion|date:"M Y" }} - {% if exp.fechafingestion %}{{ exp.fechafingestion|date:"M Y" }}{% else %}Actualidad{% endif %}</div>
         <div style="margin-top: 3px;"><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</div>
         <div class="contact-box">
-            <strong>Contacto Empresa:</strong> {{ exp.nombrecontactoempresarial }} | <strong>Telf:</strong> {{ exp.telefonocontactoempresarial }} <br>
-            <strong>Email:</strong> {{ exp.emailempresa }} | <strong>Web:</strong> {{ exp.sitiowebempresa|default:"N/A" }}
+            <strong>Contacto Empresa:</strong> {{ exp.nombrecontactoempresarial }} | <strong>Telf:</strong> {{ exp.telefonocontactoempresarial }}
         </div>
     </div>
     {% endfor %}
 
-    {% if productos_laborales or productos %}
     <div class="section-title">Producción Profesional y Académica</div>
     {% for pl in productos_laborales %}
         <div class="item-box">
             <div class="item-title">Laboral: {{ pl.nombreproducto }}</div>
-            <div style="font-size: 8.5pt; color: #888;">Fecha: {{ pl.fechaproducto|date:"d/m/Y" }}</div>
             <div style="font-size: 9pt;">{{ pl.descripcion }}</div>
         </div>
     {% endfor %}
     {% for pa in productos %}
         <div class="item-box">
             <div class="item-title">Académico: {{ pa.nombrerecurso }}</div>
-            <div class="item-sub">Clasificación: {{ pa.clasificador }}</div>
             <div style="font-size: 9pt;">{{ pa.descripcion }}</div>
         </div>
     {% endfor %}
-    {% endif %}
 
     <div class="section-title">Formación Continua</div>
     {% for curso in cursos %}
@@ -129,10 +118,6 @@
         <div class="item-title">{{ curso.nombrecurso }} ({{ curso.totalhoras }} Horas)</div>
         <div class="item-sub">{{ curso.entidadpatrocinadora }}</div>
         <div style="font-size: 8.5pt;">{{ curso.fechainicio|date:"d/m/Y" }} - {{ curso.fechafin|date:"d/m/Y" }}</div>
-        <div style="font-size: 9pt; margin-top: 2px;">{{ curso.descripcioncurso }}</div>
-        <div class="contact-box">
-            <strong>Contacto Auspicia:</strong> {{ curso.nombrecontactoauspicia }} | <strong>Telf:</strong> {{ curso.telefonocontactoauspicia }} | <strong>Email:</strong> {{ curso.emailempresapatrocinadora }}
-        </div>
     </div>
     {% endfor %}
 
@@ -142,13 +127,13 @@
     <div class="item-box">
         <div class="item-title">{{ rec.tiporeconocimiento }} ({{ rec.fechareconocimiento|date:"Y" }})</div>
         <div class="item-sub">{{ rec.entidadpatrocinadora }}</div>
-        <div style="font-size: 9pt;">{{ rec.descripcionreconocimiento }}</div>
-        <div class="contact-box">
-            <strong>Referencia:</strong> {{ rec.nombrecontactoauspicia }} | <strong>Telf:</strong> {{ rec.telefonocontactoauspicia }}
-        </div>
     </div>
     {% endfor %}
     {% endif %}
+
+    <div class="footer-page">
+        Página <pdf:pagenumber> de <pdf:pagecount>
+    </div>
 
 </body>
 </html>
