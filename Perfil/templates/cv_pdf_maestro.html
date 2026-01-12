@@ -6,155 +6,135 @@
         @page { 
             size: letter; 
             margin: 1.5cm; 
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-size: 8pt;
+                color: #888;
+            }
         }
-        body { 
-            font-family: Helvetica, Arial, sans-serif; 
-            color: #444; 
-            line-height: 1.4; 
-            font-size: 10pt;
-        }
+        body { font-family: Helvetica, Arial, sans-serif; color: #333; line-height: 1.3; font-size: 9pt; }
         
-        .page-break { display: block; page-break-before: always; }
-
-        /* Estilo Anexo Rosa Pastel */
-        .anexo-minimal {
-            text-align: left;
-            margin-top: 8cm;
-            border-left: 5px solid #f8bbd0; /* Rosa pastel suave */
-            padding-left: 30px;
-        }
-        .anexo-title { 
-            font-size: 28pt; 
-            font-weight: bold; 
-            color: #ad1457; /* Rosa fuerte profesional */
-            margin: 0;
-        }
-        .anexo-subtitle {
-            font-size: 12pt;
-            color: #888;
-            margin-top: 10px;
-            text-transform: uppercase;
-        }
-
-        /* Estilos del CV Profesional */
-        .header { width: 100%; border-bottom: 3px solid #f8bbd0; padding-bottom: 15px; margin-bottom: 20px; }
-        .name { font-size: 26pt; font-weight: bold; text-transform: uppercase; color: #ad1457; }
-        .contact-info { font-size: 9pt; color: #666; margin-top: 5px; }
-        
+        /* Estilos de Títulos y Secciones */
         .section-title { 
-            font-weight: bold; text-transform: uppercase; font-size: 11pt; 
-            margin-top: 20px; color: #ad1457; background-color: #fdf2f8; 
-            padding: 5px 10px; border-radius: 4px; margin-bottom: 10px;
+            font-weight: bold; text-transform: uppercase; font-size: 10pt; 
+            color: #ad1457; background-color: #fdf2f8; 
+            padding: 5px 10px; margin-top: 12px; margin-bottom: 6px;
+            border-left: 4px solid #ad1457;
         }
-        
-        .data-table { width: 100%; border-collapse: collapse; }
-        .label { font-weight: bold; width: 30%; padding: 4px 0; color: #ad1457; }
-        .value { width: 70%; padding: 4px 0; }
-        
-        .item-container { margin-bottom: 15px; border-left: 2px solid #fce4ec; padding-left: 10px; }
-        .item-title { font-weight: bold; font-size: 11pt; color: #333; }
-        .item-subtitle { font-weight: bold; color: #d81b60; font-size: 10pt; }
-        .item-date { font-size: 9pt; color: #888; font-style: italic; }
-        .item-desc { margin-top: 5px; text-align: justify; }
-        
-        .photo-box { text-align: right; vertical-align: middle; }
-        .photo { 
-            width: 100px; 
-            height: 100px; 
-            border: 3px solid #f8bbd0; 
-            border-radius: 50%; /* Foto circular */
-        }
+
+        /* Encabezado Principal */
+        .header-table { width: 100%; border-bottom: 2px solid #ad1457; margin-bottom: 15px; }
+        .name { font-size: 22pt; font-weight: bold; color: #ad1457; text-transform: uppercase; }
+        .photo { width: 85px; height: 85px; border-radius: 45px; border: 2px solid #f8bbd0; }
+
+        /* Tablas de Datos */
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+        .label { font-weight: bold; width: 30%; color: #ad1457; vertical-align: top; padding: 2px 0; }
+        .value { width: 70%; padding: 2px 0; }
+
+        /* Bloques de Contenido */
+        .item-box { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .item-title { font-weight: bold; font-size: 10pt; color: #222; }
+        .item-sub { color: #d81b60; font-weight: bold; }
+        .contact-box { font-size: 8pt; color: #666; background: #fafafa; padding: 5px; margin-top: 3px; }
     </style>
 </head>
 <body>
 
-    <table class="header">
+    <table class="header-table">
         <tr>
-            <td width="75%">
-                <div class="name">{{ perfil.nombres }}<br>{{ perfil.apellidos }}</div>
-                <div class="contact-info">
-                    {% if perfil.email_contacto %}{{ perfil.email_contacto }} | {% endif %}
-                    {{ perfil.telefonofijo|default:perfil.telefonoconvencional }}<br>
-                    {{ perfil.direcciondomiciliaria }}
+            <td width="80%">
+                <div class="name">{{ perfil.nombres }} {{ perfil.apellidos }}</div>
+                <div style="margin-top: 5px;">
+                    <strong>Cédula:</strong> {{ perfil.numerocedula }} | <strong>Nacionalidad:</strong> {{ perfil.nacionalidad }}<br>
+                    <strong>Email:</strong> {{ perfil.email_contacto }} | <strong>Web:</strong> {{ perfil.sitioweb|default:"N/A" }}
                 </div>
             </td>
-            <td width="25%" class="photo-box">
-                {% if perfil.foto %}
-                    {# Usamos la URL directa de Cloudinary/Media #}
-                    <img src="{{ perfil.foto.url }}" class="photo">
-                {% endif %}
+            <td width="20%" style="text-align: right;">
+                {% if foto_pdf %}<img src="{{ foto_pdf }}" class="photo">{% endif %}
             </td>
         </tr>
     </table>
 
     <div class="section-title">Perfil Profesional</div>
-    <div class="item-desc">{{ perfil.descripcionperfil }}</div>
+    <div style="text-align: justify; margin-bottom: 10px;">{{ perfil.descripcionperfil }}</div>
 
-    <div class="section-title">Información Personal</div>
+    <div class="section-title">Información Detallada</div>
     <table class="data-table">
-        <tr><td class="label">Cédula:</td><td class="value">{{ perfil.numerocedula }}</td></tr>
-        <tr><td class="label">Nacionalidad:</td><td class="value">{{ perfil.nacionalidad }}</td></tr>
-        <tr><td class="label">Estado Civil:</td><td class="value">{{ perfil.estadocivil }}</td></tr>
-        {% if perfil.sitioweb %}
-        <tr><td class="label">Sitio Web:</td><td class="value">{{ perfil.sitioweb }}</td></tr>
-        {% endif %}
+        <tr>
+            <td class="label">Nacimiento:</td>
+            <td class="value">{{ perfil.lugarnacimiento }} ({{ perfil.fechanacimiento|date:"d/m/Y" }})</td>
+        </tr>
+        <tr>
+            <td class="label">Género / Estado Civil:</td>
+            <td class="value">{{ perfil.sexo }} / {{ perfil.estadocivil }}</td>
+        </tr>
+        <tr>
+            <td class="label">Licencia / Contacto:</td>
+            <td class="value">Cat: {{ perfil.licenciaconducir }} | Telf: {{ perfil.telefonofijo }} / {{ perfil.telefonoconvencional }}</td>
+        </tr>
+        <tr>
+            <td class="label">Ubicación Domicilio:</td>
+            <td class="value">{{ perfil.direcciondomiciliaria }}</td>
+        </tr>
     </table>
 
     <div class="section-title">Experiencia Laboral</div>
     {% for exp in items %}
-        <div class="item-container">
-            <div class="item-title">{{ exp.cargodesempenado }}</div>
-            <div class="item-subtitle">{{ exp.nombrempresa }} — {{ exp.lugarempresa }}</div>
-            <div class="item-date">
-                {{ exp.fechainiciogestion|date:"d/m/Y" }} — 
-                {% if exp.fechafingestion %}{{ exp.fechafingestion|date:"d/m/Y" }}{% else %}Actualidad{% endif %}
-            </div>
-            <div class="item-desc">{{ exp.descripcionfunciones }}</div>
+    <div class="item-box">
+        <div class="item-title">{{ exp.cargodesempenado }}</div>
+        <div class="item-sub">{{ exp.nombrempresa }} — {{ exp.lugarempresa }}</div>
+        <div style="font-size: 8.5pt; color: #888;">{{ exp.fechainiciogestion|date:"M Y" }} - {% if exp.fechafingestion %}{{ exp.fechafingestion|date:"M Y" }}{% else %}Actualidad{% endif %}</div>
+        <div style="margin-top: 3px;"><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</div>
+        <div class="contact-box">
+            <strong>Referencia:</strong> {{ exp.nombrecontactoempresarial }} | <strong>Telf:</strong> {{ exp.telefonocontactoempresarial }} | <strong>Email:</strong> {{ exp.emailempresa }}
         </div>
+    </div>
     {% endfor %}
 
     {% if productos_laborales or productos %}
-    <div class="section-title">Productos y Proyectos</div>
+    <div class="section-title">Producción Profesional y Académica</div>
     {% for pl in productos_laborales %}
-        <div class="item-container">
-            <div class="item-title">• {{ pl.nombreproducto }}</div>
-            <div class="item-desc">{{ pl.descripcion }}</div>
+        <div class="item-box">
+            <div class="item-title">Laboral: {{ pl.nombreproducto }} ({{ pl.fechaproducto|date:"d/m/Y" }})</div>
+            <div style="font-size: 9pt;">{{ pl.descripcion }}</div>
         </div>
     {% endfor %}
     {% for pa in productos %}
-        <div class="item-container">
-            <div class="item-title">• {{ pa.nombrerecurso }}</div>
-            <div class="item-subtitle">{{ pa.clasificador }}</div>
-            <div class="item-desc">{{ pa.descripcion }}</div>
+        <div class="item-box">
+            <div class="item-title">Académico: {{ pa.nombrerecurso }}</div>
+            <div class="item-sub">Clasificación: {{ pa.clasificador }}</div>
+            <div style="font-size: 9pt;">{{ pa.descripcion }}</div>
         </div>
     {% endfor %}
     {% endif %}
 
-    <div class="section-title">Cursos y Capacitaciones</div>
+    <div class="section-title">Formación Continua</div>
     {% for curso in cursos %}
-        <div class="item-container">
-            <div class="item-title">{{ curso.nombrecurso }}</div>
-            <div class="item-subtitle">{{ curso.entidadpatrocinadora }} ({{ curso.totalhoras }} horas)</div>
+    <div class="item-box">
+        <div class="item-title">{{ curso.nombrecurso }} ({{ curso.totalhoras }} Horas)</div>
+        <div class="item-sub">{{ curso.entidadpatrocinadora }}</div>
+        <div style="font-size: 8.5pt;">{{ curso.fechainicio|date:"d/m/Y" }} - {{ curso.fechafin|date:"d/m/Y" }}</div>
+        <div style="font-size: 9pt; margin-top: 2px;">{{ curso.descripcioncurso }}</div>
+        <div class="contact-box">
+            <strong>Contacto:</strong> {{ curso.nombrecontactoauspicia }} | <strong>Telf:</strong> {{ curso.telefonocontactoauspicia }} | <strong>Email:</strong> {{ curso.emailempresapatrocinadora }}
         </div>
+    </div>
     {% endfor %}
 
     {% if reconocimientos %}
-    <div class="section-title">Reconocimientos</div>
+    <div class="section-title">Reconocimientos y Honores</div>
     {% for rec in reconocimientos %}
-        <div class="item-container">
-            <div class="item-title">{{ rec.tiporeconocimiento }}</div>
-            <div class="item-subtitle">{{ rec.entidadpatrocinadora }} ({{ rec.fechareconocimiento|date:"Y" }})</div>
-            <div class="item-desc">{{ rec.descripcionreconocimiento }}</div>
+    <div class="item-box">
+        <div class="item-title">{{ rec.tiporeconocimiento }} ({{ rec.fechareconocimiento|date:"Y" }})</div>
+        <div class="item-sub">{{ rec.entidadpatrocinadora }}</div>
+        <div style="font-size: 9pt;">{{ rec.descripcionreconocimiento }}</div>
+        <div class="contact-box">
+            <strong>Contacto Certificador:</strong> {{ rec.nombrecontactoauspicia }} | <strong>Telf:</strong> {{ rec.telefonocontactoauspicia }}
         </div>
+    </div>
     {% endfor %}
     {% endif %}
-
-    <div class="page-break"></div>
-    <div class="anexo-minimal">
-        <div class="anexo-title">Anexo:</div>
-        <div class="anexo-title">Certificados</div>
-        <p class="anexo-subtitle">Documentos de respaldo profesional</p>
-    </div>
 
 </body>
 </html>
