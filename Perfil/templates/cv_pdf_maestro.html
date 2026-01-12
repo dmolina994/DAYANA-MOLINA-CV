@@ -3,54 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* Optimización de página para evitar saltos en blanco */
+        /* Configuración de página y renderizado nítido */
         @page { 
             size: letter; 
-            margin: 1cm 1.5cm; 
+            margin: 1.5cm; 
         }
         body { 
-            font-family: Helvetica, Arial, sans-serif; 
-            color: #333; 
-            line-height: 1.2; 
-            font-size: 9pt; 
+            /* Fuente del sistema para máxima nitidez */
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            color: #2d2d2d; 
+            line-height: 1.4; 
+            font-size: 9.5pt; 
+            -webkit-font-smoothing: antialiased; /* Mejora nitidez en PDF */
             margin: 0;
             padding: 0;
         }
         
         .section-title { 
-            font-weight: bold; 
+            font-weight: 700; 
             text-transform: uppercase; 
-            font-size: 10pt; 
+            font-size: 10.5pt; 
             color: #ad1457; 
             background-color: #fdf2f8; 
-            padding: 4px 10px; 
-            margin-top: 10px; 
-            margin-bottom: 5px;
-            border-left: 4px solid #ad1457;
-            /* Evita que el título quede solo al final de una página */
+            padding: 6px 12px; 
+            margin-top: 18px; /* Mayor separación entre secciones */
+            margin-bottom: 8px;
+            border-left: 5px solid #ad1457;
             page-break-after: avoid;
         }
 
-        .header-table { width: 100%; border-bottom: 2px solid #ad1457; margin-bottom: 10px; }
-        .name { font-size: 20pt; font-weight: bold; color: #ad1457; text-transform: uppercase; }
-        .photo { width: 80px; height: 80px; border-radius: 40px; border: 2px solid #f8bbd0; }
+        .header-table { width: 100%; border-bottom: 2.5px solid #ad1457; margin-bottom: 15px; }
+        .name { font-size: 22pt; font-weight: 800; color: #ad1457; text-transform: uppercase; letter-spacing: -0.5px; }
+        .photo { width: 85px; height: 85px; border-radius: 50%; border: 2px solid #f8bbd0; object-fit: cover; }
 
-        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
-        .label { font-weight: bold; width: 25%; color: #ad1457; vertical-align: top; padding: 1px 0; }
-        .value { width: 75%; padding: 1px 0; }
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .label { font-weight: 600; width: 28%; color: #ad1457; vertical-align: top; padding: 4px 0; }
+        .value { width: 72%; padding: 4px 0; color: #333; }
 
         .item-box { 
-            margin-bottom: 8px; 
-            border-bottom: 1px solid #eee; 
-            padding-bottom: 4px; 
-            page-break-inside: avoid; /* Evita que un curso se parta en dos páginas */
+            margin-bottom: 12px; /* Más espacio entre cada ítem */
+            border-bottom: 1px solid #f0f0f0; 
+            padding-bottom: 8px; 
+            page-break-inside: avoid; 
         }
-        .item-title { font-weight: bold; font-size: 10pt; color: #222; }
-        .item-sub { color: #d81b60; font-weight: bold; font-size: 9pt; }
-        .description-text { font-size: 8.5pt; color: #444; margin-top: 2px; text-align: justify; }
-        .contact-box { font-size: 8pt; color: #666; background: #fafafa; padding: 4px; margin-top: 3px; }
+        .item-title { font-weight: 700; font-size: 10.5pt; color: #1a1a1a; }
+        .item-sub { color: #d81b60; font-weight: 600; font-size: 9.5pt; margin-bottom: 2px; }
+        .description-text { font-size: 9pt; color: #444; margin-top: 4px; text-align: justify; }
         
-        .footer-page { text-align: right; font-size: 8pt; color: #888; margin-top: 10px; }
+        .contact-box { 
+            font-size: 8.5pt; 
+            color: #555; 
+            background: #f9f9f9; 
+            padding: 6px; 
+            margin-top: 6px; 
+            border-radius: 4px;
+        }
+        
     </style>
 </head>
 <body>
@@ -59,9 +67,9 @@
         <tr>
             <td width="80%">
                 <div class="name">{{ perfil.nombres }} {{ perfil.apellidos }}</div>
-                <div style="margin-top: 3px;">
+                <div style="margin-top: 6px; color: #555;">
                     <strong>Cédula:</strong> {{ perfil.numerocedula }} | <strong>Nacionalidad:</strong> {{ perfil.nacionalidad }}<br>
-                    <strong>Email:</strong> {{ perfil.email_contacto }} | <strong>Web:</strong> {{ perfil.sitiweb|default:"N/A" }}
+                    <strong>Email:</strong> {{ perfil.email_contacto }} | <strong>Web:</strong> {{ perfil.sitioweb|default:"N/A" }}
                 </div>
             </td>
             <td width="20%" style="text-align: right;">
@@ -73,7 +81,7 @@
     </table>
 
     <div class="section-title">Perfil Profesional</div>
-    <div style="text-align: justify; margin-bottom: 8px;">{{ perfil.descripcionperfil }}</div>
+    <div style="text-align: justify; margin-bottom: 12px; padding: 0 4px;">{{ perfil.descripcionperfil }}</div>
 
     <div class="section-title">Información Detallada</div>
     <table class="data-table">
@@ -100,7 +108,7 @@
     <div class="item-box">
         <div class="item-title">{{ exp.cargodesempenado }}</div>
         <div class="item-sub">{{ exp.nombrempresa }} — {{ exp.lugarempresa }}</div>
-        <div style="font-size: 8.5pt; color: #888;">{{ exp.fechainiciogestion|date:"M Y" }} - {% if exp.fechafingestion %}{{ exp.fechafingestion|date:"M Y" }}{% else %}Actualidad{% endif %}</div>
+        <div style="font-size: 8.5pt; color: #777; font-weight: 500;">{{ exp.fechainiciogestion|date:"M Y" }} - {% if exp.fechafingestion %}{{ exp.fechafingestion|date:"M Y" }}{% else %}Actualidad{% endif %}</div>
         <div class="description-text"><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</div>
         <div class="contact-box">
             <strong>Contacto Empresa:</strong> {{ exp.nombrecontactoempresarial }} | <strong>Telf:</strong> {{ exp.telefonocontactoempresarial }}
@@ -127,7 +135,7 @@
     <div class="item-box">
         <div class="item-title">{{ curso.nombrecurso }} ({{ curso.totalhoras }} Horas)</div>
         <div class="item-sub">{{ curso.entidadpatrocinadora }}</div>
-        <div style="font-size: 8.5pt; color: #888;">{{ curso.fechainicio|date:"d/m/Y" }} - {{ curso.fechafin|date:"d/m/Y" }}</div>
+        <div style="font-size: 8.5pt; color: #777;">{{ curso.fechainicio|date:"d/m/Y" }} - {{ curso.fechafin|date:"d/m/Y" }}</div>
         <div class="description-text">{{ curso.descripcioncurso }}</div>
     </div>
     {% endfor %}
