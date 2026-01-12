@@ -3,29 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <style>
+        /* Configuración de página simplificada para evitar errores en Python 3.13 */
         @page { 
             size: letter; 
             margin: 1.5cm; 
-            @bottom-right {
-                content: "Página " counter(page) " de " counter(pages);
-                font-size: 8pt;
-                color: #888;
-            }
         }
-        body { font-family: Helvetica, Arial, sans-serif; color: #333; line-height: 1.3; font-size: 9pt; }
+        body { 
+            font-family: Helvetica, Arial, sans-serif; 
+            color: #333; 
+            line-height: 1.3; 
+            font-size: 9pt; 
+        }
         
         /* Estilos de Títulos y Secciones */
         .section-title { 
-            font-weight: bold; text-transform: uppercase; font-size: 10pt; 
-            color: #ad1457; background-color: #fdf2f8; 
-            padding: 5px 10px; margin-top: 12px; margin-bottom: 6px;
+            font-weight: bold; 
+            text-transform: uppercase; 
+            font-size: 10pt; 
+            color: #ad1457; 
+            background-color: #fdf2f8; 
+            padding: 5px 10px; 
+            margin-top: 12px; 
+            margin-bottom: 6px;
             border-left: 4px solid #ad1457;
         }
 
         /* Encabezado Principal */
         .header-table { width: 100%; border-bottom: 2px solid #ad1457; margin-bottom: 15px; }
         .name { font-size: 22pt; font-weight: bold; color: #ad1457; text-transform: uppercase; }
-        .photo { width: 85px; height: 85px; border-radius: 45px; border: 2px solid #f8bbd0; }
+        .photo { width: 85px; height: 85px; border-radius: 40px; border: 2px solid #f8bbd0; }
 
         /* Tablas de Datos */
         .data-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
@@ -51,7 +57,9 @@
                 </div>
             </td>
             <td width="20%" style="text-align: right;">
-                {% if foto_pdf %}<img src="{{ foto_pdf }}" class="photo">{% endif %}
+                {% if foto_pdf %}
+                    <img src="{{ foto_pdf }}" class="photo">
+                {% endif %}
             </td>
         </tr>
     </table>
@@ -74,7 +82,11 @@
             <td class="value">Cat: {{ perfil.licenciaconducir }} | Telf: {{ perfil.telefonofijo }} / {{ perfil.telefonoconvencional }}</td>
         </tr>
         <tr>
-            <td class="label">Ubicación Domicilio:</td>
+            <td class="label">Dirección Trabajo:</td>
+            <td class="value">{{ perfil.direcciontrabajo|default:"No registrada" }}</td>
+        </tr>
+        <tr>
+            <td class="label">Domicilio:</td>
             <td class="value">{{ perfil.direcciondomiciliaria }}</td>
         </tr>
     </table>
@@ -87,7 +99,8 @@
         <div style="font-size: 8.5pt; color: #888;">{{ exp.fechainiciogestion|date:"M Y" }} - {% if exp.fechafingestion %}{{ exp.fechafingestion|date:"M Y" }}{% else %}Actualidad{% endif %}</div>
         <div style="margin-top: 3px;"><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</div>
         <div class="contact-box">
-            <strong>Referencia:</strong> {{ exp.nombrecontactoempresarial }} | <strong>Telf:</strong> {{ exp.telefonocontactoempresarial }} | <strong>Email:</strong> {{ exp.emailempresa }}
+            <strong>Contacto Empresa:</strong> {{ exp.nombrecontactoempresarial }} | <strong>Telf:</strong> {{ exp.telefonocontactoempresarial }} <br>
+            <strong>Email:</strong> {{ exp.emailempresa }} | <strong>Web:</strong> {{ exp.sitiowebempresa|default:"N/A" }}
         </div>
     </div>
     {% endfor %}
@@ -96,7 +109,8 @@
     <div class="section-title">Producción Profesional y Académica</div>
     {% for pl in productos_laborales %}
         <div class="item-box">
-            <div class="item-title">Laboral: {{ pl.nombreproducto }} ({{ pl.fechaproducto|date:"d/m/Y" }})</div>
+            <div class="item-title">Laboral: {{ pl.nombreproducto }}</div>
+            <div style="font-size: 8.5pt; color: #888;">Fecha: {{ pl.fechaproducto|date:"d/m/Y" }}</div>
             <div style="font-size: 9pt;">{{ pl.descripcion }}</div>
         </div>
     {% endfor %}
@@ -117,7 +131,7 @@
         <div style="font-size: 8.5pt;">{{ curso.fechainicio|date:"d/m/Y" }} - {{ curso.fechafin|date:"d/m/Y" }}</div>
         <div style="font-size: 9pt; margin-top: 2px;">{{ curso.descripcioncurso }}</div>
         <div class="contact-box">
-            <strong>Contacto:</strong> {{ curso.nombrecontactoauspicia }} | <strong>Telf:</strong> {{ curso.telefonocontactoauspicia }} | <strong>Email:</strong> {{ curso.emailempresapatrocinadora }}
+            <strong>Contacto Auspicia:</strong> {{ curso.nombrecontactoauspicia }} | <strong>Telf:</strong> {{ curso.telefonocontactoauspicia }} | <strong>Email:</strong> {{ curso.emailempresapatrocinadora }}
         </div>
     </div>
     {% endfor %}
@@ -130,7 +144,7 @@
         <div class="item-sub">{{ rec.entidadpatrocinadora }}</div>
         <div style="font-size: 9pt;">{{ rec.descripcionreconocimiento }}</div>
         <div class="contact-box">
-            <strong>Contacto Certificador:</strong> {{ rec.nombrecontactoauspicia }} | <strong>Telf:</strong> {{ rec.telefonocontactoauspicia }}
+            <strong>Referencia:</strong> {{ rec.nombrecontactoauspicia }} | <strong>Telf:</strong> {{ rec.telefonocontactoauspicia }}
         </div>
     </div>
     {% endfor %}
