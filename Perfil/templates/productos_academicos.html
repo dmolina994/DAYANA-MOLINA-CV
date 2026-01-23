@@ -49,4 +49,99 @@
     </div>
 
 </main>
-{% endblock %}
+{% endblock %}{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* ✨ Estilo de Tarjetas Académicas */
+    .academico-card {
+        transition: all 0.3s ease;
+        border: none !important;
+        border-top: 5px solid #0d6efd !important; /* El mismo azul de referencia */
+        border-radius: 15px !important;
+        background-color: #ffffff;
+        height: 100%;
+    }
+
+    .academico-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(13, 110, 253, 0.12);
+    }
+
+    .titulo-academico {
+        color: #0d6efd;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .badge-categoria {
+        font-size: 0.8rem;
+        background: #e7f1ff;
+        color: #0d6efd;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        border: 1px solid #cfe2ff;
+    }
+
+    .descripcion-texto {
+        font-size: 0.95rem;
+        color: #444;
+        line-height: 1.6;
+        background: #fcfcfc;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 3px solid #dee2e6;
+    }
+
+    .linea-azul-central {
+        width: 80px;
+        height: 4px;
+        background: #0d6efd;
+        border: none;
+        margin: 1rem auto 3rem;
+        opacity: 1;
+        border-radius: 50px;
+    }
+</style>
+
+<main class="container py-5">
+
+    <div class="text-center">
+        <h1 class="display-5 fw-bold">📚 Productos Académicos</h1>
+        <p class="lead text-muted">Trabajos, investigaciones y proyectos destacados desarrollados durante mi formación académica.</p>
+        <hr class="linea-azul-central">
+    </div>
+
+    <div class="row g-4">
+        {% for producto in productos_academicos %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm academico-card">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <span class="badge-categoria mb-2 d-inline-block">
+                            <i class="bi bi-tag-fill me-1"></i> {{ producto.clasificador|default:"General" }}
+                        </span>
+                        <h4 class="titulo-academico h5">
+                            {{ producto.nombrerecurso }}
+                        </h4>
+                    </div>
+                    
+                    <div class="descripcion-texto flex-grow-1">
+                        {{ producto.descripcion|linebreaksbr }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-light shadow-sm border-0" style="border-left: 5px solid #0d6efd;">
+                <i class="bi bi-journal-x fs-3 d-block mb-2" style="color: #0d6efd;"></i>
+                Aún no hay productos académicos activos para mostrar.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{% url 'home' %}" class="btn btn-outline-primary rounded-pill px-

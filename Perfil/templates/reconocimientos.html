@@ -2,26 +2,53 @@
 
 {% block content %}
 <style>
-    /* ✨ Diseño de tarjetas de reconocimiento */
+    /* ✨ Diseño de tarjetas profesionales en AZUL */
     .rec-card {
         transition: all 0.3s ease;
         border: none !important;
-        border-top: 5px solid #ffc107 !important; /* Color dorado para éxitos académicos */
-        border-radius: 15px !important;
+        border-top: 5px solid #0d6efd !important; /* El azul que solicitaste */
+        border-radius: 12px !important;
         background-color: #ffffff;
         height: 100%;
     }
+
     .rec-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(13, 110, 253, 0.15); /* Sombra con tinte azul */
     }
+
     .badge-entidad {
         font-size: 0.85rem;
-        background: #fff9e6;
-        border: 1px solid #ffeeba;
-        color: #856404;
+        background: #e7f1ff; /* Azul muy claro para el fondo del badge */
+        border: 1px solid #cfe2ff;
+        color: #0d6efd;
         padding: 5px 12px;
         border-radius: 20px;
+    }
+
+    /* Estilo para los botones en azul */
+    .btn-azul-primario {
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        color: white !important;
+    }
+
+    .btn-azul-outline {
+        border-color: #0d6efd !important;
+        color: #0d6efd !important;
+    }
+    
+    .btn-azul-outline:hover {
+        background-color: #0d6efd !important;
+        color: white !important;
+    }
+
+    .linea-azul {
+        width: 80px; 
+        height: 4px; 
+        background: #0d6efd; 
+        border: none; 
+        opacity: 1;
     }
 </style>
 
@@ -29,7 +56,7 @@
     <div class="text-center mb-5">
         <h1 class="display-5 fw-bold">🏅 Reconocimientos Académicos</h1>
         <p class="lead text-muted">Menciones y honores obtenidos por excelencia y desempeño.</p>
-        <hr class="mx-auto" style="width: 80px; height: 4px; background: #ffc107; border:none; opacity:1;">
+        <hr class="mx-auto linea-azul">
     </div>
 
     <div class="row g-4">
@@ -38,7 +65,7 @@
             <div class="card shadow-sm rec-card">
                 <div class="card-body d-flex flex-column">
                     <div class="mb-3">
-                        <h4 class="fw-bold mb-1" style="color: #b08d00;">{{ reconocimiento.tiporeconocimiento }}</h4>
+                        <h4 class="fw-bold mb-1" style="color: #0d6efd;">{{ reconocimiento.tiporeconocimiento }}</h4>
                         <span class="badge-entidad">
                             <i class="bi bi-award"></i> {{ reconocimiento.entidadpatrocinadora }}
                         </span>
@@ -49,7 +76,7 @@
                     </p>
                     
                     <div class="mt-auto pt-3 border-top">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted small">
                                 <i class="bi bi-calendar-event"></i> 
                                 {% if reconocimiento.fechareconocimiento %}
@@ -58,26 +85,26 @@
                                     Año no registrado
                                 {% endif %}
                             </span>
-
-                            {% if reconocimiento.rutacertificado %}
-                            <div class="btn-group">
-                                <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-warning text-white px-3" target="_blank">
-                                    <i class="bi bi-eye-fill"></i> Ver
-                                </a>
-                                <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-outline-warning" download>
-                                    <i class="bi bi-download"></i>
-                                </a>
-                            </div>
-                            {% endif %}
                         </div>
+
+                        {% if reconocimiento.rutacertificado %}
+                        <div class="d-grid gap-2">
+                            <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-azul-primario" target="_blank">
+                                <i class="bi bi-eye-fill"></i> Ver Certificado
+                            </a>
+                            <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-azul-outline" download>
+                                <i class="bi bi-download"></i> Descargar PDF
+                            </a>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <div class="alert alert-warning shadow-sm border-0">
-                <i class="bi bi-exclamation-circle fs-3 d-block mb-2"></i>
+            <div class="alert alert-light shadow-sm border-0" style="border-left: 5px solid #0d6efd !important;">
+                <i class="bi bi-exclamation-circle fs-3 d-block mb-2" style="color: #0d6efd;"></i>
                 No hay reconocimientos registrados para mostrar en este momento.
             </div>
         </div>

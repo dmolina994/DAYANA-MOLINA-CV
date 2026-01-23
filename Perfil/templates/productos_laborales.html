@@ -1,51 +1,101 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    /* ✨ Estilo Creativo para Productos Laborales */
+    .producto-card {
+        transition: all 0.3s ease;
+        border: none !important;
+        border-top: 5px solid #0d6efd !important; /* El azul que solicitaste */
+        border-radius: 15px !important;
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+
+    .producto-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(13, 110, 253, 0.12);
+    }
+
+    .titulo-producto {
+        color: #0d6efd;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .badge-fecha {
+        font-size: 0.85rem;
+        background: #e7f1ff;
+        color: #0d6efd;
+        padding: 4px 12px;
+        border-radius: 8px;
+        display: inline-block;
+    }
+
+    .descripcion-box {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        border-left: 3px solid #dee2e6;
+        margin-top: 15px;
+    }
+
+    .linea-decorativa {
+        width: 60px;
+        height: 4px;
+        background: #0d6efd;
+        border: none;
+        margin: 1rem auto 2rem;
+        opacity: 1;
+        border-radius: 2px;
+    }
+</style>
+
 <main class="container py-5">
 
-    <h1 class="text-center mb-4">
-        💼 Productos Laborales
-    </h1>
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold">💼 Productos Laborales</h1>
+        <p class="lead text-muted">Proyectos y productos desarrollados aplicando conocimientos técnicos y profesionales.</p>
+        <hr class="linea-decorativa">
+    </div>
 
-    <p class="text-center mb-5" style="color: black;">
-        Proyectos y productos desarrollados aplicando conocimientos
-        técnicos y profesionales.
-    </p>
-
-    <div class="row">
-
+    <div class="row g-4">
         {% for producto in productos_laborales %}
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">
-                        {{ producto.nombreproducto }}
-                    </h5>
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm producto-card">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <h4 class="titulo-producto mb-2">
+                            {{ producto.nombreproducto }}
+                        </h4>
+                        <div class="badge-fecha">
+                            <i class="bi bi-calendar3"></i> Fecha: {{ producto.fechaproducto|date:"d/m/Y" }}
+                        </div>
+                    </div>
                     
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        Fecha: {{ producto.fechaproducto|date:"d/m/Y" }}
-                    </h6>
-                    
-                    <p class="card-text mt-3" style="color: black;">
-                        <strong>Descripción:</strong><br>
-                        {{ producto.descripcion|linebreaksbr }}
-                    </p>
-                </div>
+                    <div class="descripcion-box flex-grow-1">
+                        <h6 class="fw-bold small text-uppercase text-muted mb-2">Descripción del Proyecto:</h6>
+                        <p class="card-text text-dark mb-0" style="line-height: 1.5;">
+                            {{ producto.descripcion|linebreaksbr }}
+                        </p>
+                    </div>
+
+                    </div>
             </div>
         </div>
         {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info text-center" role="alert">
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-light shadow-sm border-0" style="border-left: 5px solid #0d6efd;">
+                <i class="bi bi-info-circle fs-3 d-block mb-2" style="color: #0d6efd;"></i>
                 Aún no hay productos laborales activos para mostrar.
             </div>
         </div>
         {% endfor %}
-
     </div>
 
-    <div class="text-center mt-4">
-        <a href="{% url 'home' %}" class="btn btn-outline-dark">
-            Volver al inicio
+    <div class="text-center mt-5">
+        <a href="{% url 'home' %}" class="btn btn-outline-primary rounded-pill px-4">
+            <i class="bi bi-arrow-left"></i> Volver al inicio
         </a>
     </div>
 
