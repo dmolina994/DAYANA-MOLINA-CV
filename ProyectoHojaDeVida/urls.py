@@ -12,7 +12,7 @@ urlpatterns = [
     path('productos-laborales/', views.productos_laborales, name='productos_laborales'),
     path('cursos/', views.cursos, name='cursos'),
     path('reconocimientos/', views.reconocimientos, name='reconocimientos'),
-    path('garage/', views.garage, name='garage'),
+    path('ventagarage/', views.ventagarage, name='ventagarage'),
     # Esta línea debe usar el nombre exacto que definimos en views.py
     path('exportar-cv-completo/', views.pdf_datos_personales, name='exportar_cv'),
 ]

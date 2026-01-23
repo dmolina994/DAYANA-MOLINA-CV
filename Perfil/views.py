@@ -76,7 +76,7 @@ def reconocimientos(request):
     reco_list = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
     return render(request, 'reconocimientos.html', {'reconocimientos': reco_list, 'perfil': perfil})
 
-def garage(request):
+def ventagarage(request):
     perfil = get_active_profile()
     items = VentaGarage.objects.all()
     return render(request, 'garage.html', {'garage_items': items, 'perfil': perfil})

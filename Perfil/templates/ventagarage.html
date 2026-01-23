@@ -23,7 +23,13 @@
             <div class="card-body">
                 <h5 class="card-title text-dark">{{ item.nombreproducto }}</h5>
                 
-                <span class="badge rounded-pill bg-info text-dark mb-2">{{ item.estadoproducto }}</span>
+                {% if item.estadoproducto == 'Bueno' %}
+                    <span class="badge rounded-pill bg-success text-white mb-2">Bueno</span>
+                {% elif item.estadoproducto == 'Regular' %}
+                    <span class="badge rounded-pill bg-warning text-dark mb-2">Regular</span>
+                {% else %}
+                    <span class="badge rounded-pill bg-secondary text-white mb-2">{{ item.estadoproducto }}</span>
+                {% endif %}
                 
                 <h4 class="mt-2" style="color: var(--rosa-fuerte);">${{ item.valordelbien }}</h4>
                 
@@ -32,7 +38,7 @@
                 </p>
             </div>
             
-            </div>
+        </div>
     </div>
     {% empty %}
     <div class="col-12 text-center">
