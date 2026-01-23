@@ -79,7 +79,7 @@ def reconocimientos(request):
 def ventagarage(request):
     perfil = get_active_profile()
     items = VentaGarage.objects.all()
-    return render(request, 'ventagarage.html', {'ventagarage_items': items, 'perfil': perfil})
+    return render(request, 'ventagarage.html', {'garage_items': items, 'perfil': perfil})
 
 # --- Generación de PDF (Corregida) ---
 
