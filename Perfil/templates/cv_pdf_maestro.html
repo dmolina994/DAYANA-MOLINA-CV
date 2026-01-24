@@ -156,16 +156,18 @@
     {% endfor %}
     {% endif %}
 
-    {% if garage %}
+{% if garage %}
     <div class="section-title">Venta de Garage / Otros Items</div>
     {% for item in garage %}
     <div class="item-box">
-        <div class="item-title">{{ item.nombre }} <span class="price-tag">— ${{ item.precio }}</span></div>
+        <div class="item-title">{{ item.nombreproducto }} <span class="price-tag">— ${{ item.valordelbien }}</span></div>
+        
         {% if item.descripcion %}
         <div class="description-text">{{ item.descripcion }}</div>
         {% endif %}
+        
         <div style="font-size: 8.5pt; color: #777; margin-top: 2px;">
-            <strong>Estado:</strong> {{ item.get_estado_display|default:item.estado }}
+            <strong>Estado:</strong> {{ item.get_estadoproducto_display|default:item.estadoproducto }}
         </div>
     </div>
     {% endfor %}
