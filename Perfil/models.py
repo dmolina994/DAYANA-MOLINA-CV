@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator # Se añade RegexValidator
 
 # --- FUNCIONES DE VALIDACIÓN ---
 
@@ -19,7 +19,19 @@ class DatosPersonales(models.Model):
     nacionalidad = models.CharField(max_length=20)
     lugarnacimiento = models.CharField(max_length=60, blank=True, null=True)
     fechanacimiento = models.DateField(validators=[validar_no_futuro])
-    numerocedula = models.CharField(max_length=10, unique=True)
+    
+    # MODIFICACIÓN AQUÍ: Única y solo números (exactamente 10)
+    numerocedula = models.CharField(
+        max_length=10, 
+        unique=True, 
+        validators=[
+            RegexValidator(
+                regex=r'^\d{10}$',
+                message='La cédula debe tener 10 dígitos numéricos.',
+                code='cedula_invalida'
+            )
+        ]
+    )
     
     SEXO_CHOICES = [('H', 'Hombre'), ('M', 'Mujer')]
     sexo = models.CharField(max_length=1, choices=SEXO_CHOICES)
@@ -39,7 +51,6 @@ class DatosPersonales(models.Model):
     class Meta:
         verbose_name = "Datos Personales"
         verbose_name_plural = "Datos Personales"
-
 
 # --- 2. EXPERIENCIA LABORAL ---
 class ExperienciaLaboral(models.Model):

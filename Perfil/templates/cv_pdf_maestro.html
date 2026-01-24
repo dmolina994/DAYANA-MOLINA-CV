@@ -9,12 +9,11 @@
             margin: 1.5cm; 
         }
         body { 
-            /* Fuente del sistema para máxima nitidez */
             font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             color: #2d2d2d; 
             line-height: 1.4; 
             font-size: 9.5pt; 
-            -webkit-font-smoothing: antialiased; /* Mejora nitidez en PDF */
+            -webkit-font-smoothing: antialiased;
             margin: 0;
             padding: 0;
         }
@@ -26,7 +25,7 @@
             color: #ad1457; 
             background-color: #fdf2f8; 
             padding: 6px 12px; 
-            margin-top: 18px; /* Mayor separación entre secciones */
+            margin-top: 18px; 
             margin-bottom: 8px;
             border-left: 5px solid #ad1457;
             page-break-after: avoid;
@@ -41,7 +40,7 @@
         .value { width: 72%; padding: 4px 0; color: #333; }
 
         .item-box { 
-            margin-bottom: 12px; /* Más espacio entre cada ítem */
+            margin-bottom: 12px; 
             border-bottom: 1px solid #f0f0f0; 
             padding-bottom: 8px; 
             page-break-inside: avoid; 
@@ -57,6 +56,13 @@
             padding: 6px; 
             margin-top: 6px; 
             border-radius: 4px;
+        }
+
+        /* Estilo específico para precios en Garage */
+        .price-tag {
+            color: #2e7d32;
+            font-weight: 700;
+            font-size: 10pt;
         }
         
     </style>
@@ -146,6 +152,21 @@
     <div class="item-box">
         <div class="item-title">{{ rec.tiporeconocimiento }} ({{ rec.fechareconocimiento|date:"Y" }})</div>
         <div class="item-sub">{{ rec.entidadpatrocinadora }}</div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if garage %}
+    <div class="section-title">Venta de Garage / Otros Items</div>
+    {% for item in garage %}
+    <div class="item-box">
+        <div class="item-title">{{ item.nombre }} <span class="price-tag">— ${{ item.precio }}</span></div>
+        {% if item.descripcion %}
+        <div class="description-text">{{ item.descripcion }}</div>
+        {% endif %}
+        <div style="font-size: 8.5pt; color: #777; margin-top: 2px;">
+            <strong>Estado:</strong> {{ item.get_estado_display|default:item.estado }}
+        </div>
     </div>
     {% endfor %}
     {% endif %}

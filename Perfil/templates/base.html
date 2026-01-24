@@ -30,6 +30,11 @@
             text-align: center;
         }
 
+        /* --- ESTILO PARA OCULTAR SECCIONES DINÁMICAMENTE --- */
+        .nav-link.seccion-oculta {
+            display: none !important;
+        }
+
         .profile-img-container {
             width: 140px; height: 140px;
             margin: 0 auto 20px;
@@ -93,7 +98,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 10px;
             background-color: #333;
             color: white !important;
             border: none;
@@ -109,13 +114,23 @@
         .btn-descargar-pdf:hover {
             background-color: var(--rosa-fuerte);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(214, 90, 134, 0.3);
         }
 
-        /* Estilos específicos para los Checkboxes del Modal */
-        .form-check-input:checked {
-            background-color: #7d57f1;
-            border-color: #7d57f1;
+        /* BOTÓN PARA CONFIGURAR LA VISTA WEB */
+        .btn-config-web {
+            background-color: transparent;
+            color: var(--celeste-fuerte);
+            border: 1px solid var(--celeste-fuerte);
+            border-radius: 50px;
+            width: 100%;
+            padding: 8px;
+            font-size: 0.8rem;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .btn-config-web:hover {
+            background-color: var(--celeste-fuerte);
+            color: white;
         }
 
         .btn-admin {
@@ -149,37 +164,37 @@
                 {% endif %}
             </div>
 
-            <h4 class="nombre-perfil">
-                {{ perfil.nombres }}<br>
-                {{ perfil.apellidos }}
-            </h4>
-
+            <h4 class="nombre-perfil">{{ perfil.nombres }}<br>{{ perfil.apellidos }}</h4>
             <p class="small text-muted">{{ perfil.descripcionperfil }}</p>
             <hr>
 
-            <div class="nav flex-column nav-pills">
-                <a class="nav-link" href="{% url 'home' %}">
+            <div class="nav flex-column nav-pills" id="nav-container">
+                <a class="nav-link" href="{% url 'home' %}" id="web_home">
                     <i class="bi bi-house-door-fill"></i> Inicio
                 </a>
-                <a class="nav-link" href="{% url 'experiencia' %}">
+                <a class="nav-link" href="{% url 'experiencia' %}" id="web_exp">
                     <i class="bi bi-briefcase-fill"></i> Experiencia
                 </a>
-                <a class="nav-link" href="{% url 'cursos' %}">
+                <a class="nav-link" href="{% url 'cursos' %}" id="web_cur">
                     <i class="bi bi-mortarboard-fill"></i> Cursos
                 </a>
-                <a class="nav-link" href="{% url 'reconocimientos' %}">
+                <a class="nav-link" href="{% url 'reconocimientos' %}" id="web_rec">
                     <i class="bi bi-award-fill"></i> Reconocimientos
                 </a>
-                <a class="nav-link" href="{% url 'productos_laborales' %}">
+                <a class="nav-link" href="{% url 'productos_laborales' %}" id="web_plab">
                     <i class="bi bi-rocket-takeoff-fill"></i> Productos Laborales
                 </a>
-                <a class="nav-link" href="{% url 'productos_academicos' %}">
+                <a class="nav-link" href="{% url 'productos_academicos' %}" id="web_pacad">
                     <i class="bi bi-journal-bookmark-fill"></i> Productos Académicos
                 </a>
-                <a class="nav-link garage-link" href="{% url 'ventagarage' %}">
+                <a class="nav-link garage-link" href="{% url 'ventagarage' %}" id="web_gar">
                     <i class="bi bi-bag-heart-fill"></i> Garage
                 </a>
             </div>
+
+            <button class="btn-config-web" data-bs-toggle="modal" data-bs-target="#modalConfigWeb">
+                <i class="bi bi-sliders me-1"></i> Configurar Menú
+            </button>
 
             <button type="button" class="btn-descargar-pdf" data-bs-toggle="modal" data-bs-target="#modalFiltrosPDF">
                 <i class="bi bi-file-earmark-pdf-fill me-2"></i> Descargar PDF
@@ -197,11 +212,50 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalFiltrosPDF" tabindex="-1" aria-labelledby="modalFiltrosPDFLabel" aria-hidden="true">
+<div class="modal fade" id="modalConfigWeb" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 20px; border: none; padding: 15px;">
             <div class="modal-header border-0">
-                <h5 class="modal-title w-100 text-center fw-bold" id="modalFiltrosPDFLabel" style="color: #0d6efd;">Seleccionar Secciones para PDF</h5>
+                <h5 class="modal-title w-100 text-center fw-bold" style="color: var(--celeste-fuerte);">Activar/Desactivar Secciones</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-check mb-3">
+                    <input class="form-check-input config-check" type="checkbox" data-target="web_exp" id="c_exp" checked>
+                    <label class="form-check-label ms-2" for="c_exp">Ver Experiencia</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input config-check" type="checkbox" data-target="web_cur" id="c_cur" checked>
+                    <label class="form-check-label ms-2" for="c_cur">Ver Cursos</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input config-check" type="checkbox" data-target="web_rec" id="c_rec" checked>
+                    <label class="form-check-label ms-2" for="c_rec">Ver Reconocimientos</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input config-check" type="checkbox" data-target="web_plab" id="c_plab" checked>
+                    <label class="form-check-label ms-2" for="c_plab">Ver Prod. Laborales</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input config-check" type="checkbox" data-target="web_pacad" id="c_pacad" checked>
+                    <label class="form-check-label ms-2" for="c_pacad">Ver Prod. Académicos</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input config-check" type="checkbox" data-target="web_gar" id="c_gar" checked>
+                    <label class="form-check-label ms-2" for="c_gar">Ver Garage</label>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" style="border-radius: 10px; background-color: var(--celeste-fuerte); border:none;">Listo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFiltrosPDF" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: none; padding: 15px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title w-100 text-center fw-bold" style="color: #0d6efd;">Seleccionar Secciones para PDF</h5>
             </div>
             <div class="modal-body">
                 <div class="form-check mb-3">
@@ -240,6 +294,34 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+// --- NUEVO SCRIPT: CONTROL DE VISIBILIDAD WEB ---
+document.addEventListener("DOMContentLoaded", function() {
+    const configChecks = document.querySelectorAll('.config-check');
+
+    // Cargar preferencia guardada al iniciar
+    configChecks.forEach(check => {
+        const targetId = check.getAttribute('data-target');
+        const hiddenStatus = localStorage.getItem('hide_web_' + targetId);
+        
+        if (hiddenStatus === 'true') {
+            check.checked = false;
+            document.getElementById(targetId).classList.add('seccion-oculta');
+        }
+
+        check.addEventListener('change', function() {
+            const target = document.getElementById(this.getAttribute('data-target'));
+            if (this.checked) {
+                target.classList.remove('seccion-oculta');
+                localStorage.setItem('hide_web_' + targetId, 'false');
+            } else {
+                target.classList.add('seccion-oculta');
+                localStorage.setItem('hide_web_' + targetId, 'true');
+            }
+        });
+    });
+});
+
+// --- TÚ SCRIPT ORIGINAL DE PDF (SIN CAMBIOS) ---
 function descargarPDFConFiltros() {
     const params = new URLSearchParams({
         exp: document.getElementById('check_exp').checked,
@@ -249,15 +331,9 @@ function descargarPDFConFiltros() {
         proy: document.getElementById('check_proy').checked,
         gar: document.getElementById('check_gar').checked
     });
-
-    // Cambia 'exportar_cv' por el nombre que tengas en tu urls.py para la vista pdf_datos_personales
     const url = "{% url 'exportar_cv' %}?" + params.toString();
     window.location.href = url;
-
-    // Cerrar modal
-    const modalElement = document.getElementById('modalFiltrosPDF');
-    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-    modalInstance.hide();
+    bootstrap.Modal.getInstance(document.getElementById('modalFiltrosPDF')).hide();
 }
 </script>
 </body>
