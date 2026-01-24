@@ -7,7 +7,6 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <style>
@@ -21,24 +20,18 @@
             --blanco: #ffffff;
         }
 
-        body {
-            background-color: var(--rosa-fondo);
-            font-family: 'Poppins', sans-serif;
-            color: var(--negro);
-        }
+        body { background-color: var(--rosa-fondo); font-family: 'Poppins', sans-serif; color: var(--negro); }
 
-        /* Sidebar - Ajuste de ancho y padding */
         .sidebar-container {
             background-color: var(--blanco);
             border-right: 1px solid #eee;
             min-height: 100vh;
-            padding: 30px 15px; /* Reduje padding lateral para ganar espacio interno */
+            padding: 30px 15px;
             text-align: center;
         }
 
         .profile-img-container {
-            width: 140px; /* Un poquito más pequeña para que respire la columna */
-            height: 140px;
+            width: 140px; height: 140px;
             margin: 0 auto 20px;
             border-radius: 50%;
             overflow: hidden;
@@ -46,29 +39,23 @@
             background-color: #eee;
         }
 
-        .profile-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .profile-img { width: 100%; height: 100%; object-fit: cover; }
 
         .nombre-perfil {
             font-family: 'Playfair Display', serif;
             color: var(--rosa-fuerte);
-            font-size: 1.4rem; /* Ajustado para que quepan apellidos */
+            font-size: 1.4rem;
             line-height: 1.2;
             text-align: center;
             margin-bottom: 10px;
-            word-wrap: break-word; /* Forza el salto de línea si el nombre es muy largo */
+            word-wrap: break-word;
             overflow-wrap: break-word;
         }
 
-        /* MENÚ - Ajustes para que no sobresalga */
         .nav-pills .nav-link {
             font-family: 'Poppins', sans-serif;
             font-weight: 500;
-            font-size: 0.9rem; /* Texto ligeramente más pequeño para evitar desbordes */
-            letter-spacing: 0.2px;
+            font-size: 0.9rem;
             color: var(--negro);
             margin-bottom: 8px;
             border-radius: 12px;
@@ -76,26 +63,21 @@
             display: flex;
             align-items: center;
             transition: all 0.3s ease;
-            white-space: normal; /* Permite que el texto del link use dos líneas si es necesario */
+            white-space: normal;
             text-align: left;
         }
 
         .nav-pills .nav-link i {
             font-size: 1.1rem;
             color: var(--rosa-fuerte);
-            transition: color 0.3s ease;
             margin-right: 10px;
-            flex-shrink: 0; /* Evita que el icono se aplaste */
+            flex-shrink: 0;
         }
 
         .nav-pills .nav-link:hover {
             background-color: var(--celeste-pastel);
             color: var(--celeste-fuerte);
             transform: translateX(4px);
-        }
-
-        .nav-pills .nav-link:hover i {
-            color: var(--celeste-fuerte);
         }
 
         .nav-link.garage-link {
@@ -121,12 +103,19 @@
             font-weight: 500;
             font-size: 0.9rem;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .btn-descargar-pdf:hover {
             background-color: var(--rosa-fuerte);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(214, 90, 134, 0.3);
+        }
+
+        /* Estilos específicos para los Checkboxes del Modal */
+        .form-check-input:checked {
+            background-color: #7d57f1;
+            border-color: #7d57f1;
         }
 
         .btn-admin {
@@ -141,17 +130,12 @@
             font-size: 14px;
             font-weight: 600;
             text-decoration: none;
-            box-shadow: 0 4px 10px rgba(214, 90, 134, 0.2);
-            transition: all 0.3s ease;
             z-index: 1000;
         }
 
-        @media print {
-            .no-print { display: none !important; }
-        }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
-
 <body>
 
 <div class="container-fluid">
@@ -197,9 +181,9 @@
                 </a>
             </div>
 
-            <a href="{% url 'exportar_cv' %}" class="btn-descargar-pdf">
+            <button type="button" class="btn-descargar-pdf" data-bs-toggle="modal" data-bs-target="#modalFiltrosPDF">
                 <i class="bi bi-file-earmark-pdf-fill me-2"></i> Descargar PDF
-            </a>
+            </button>
         </div>
 
         <div class="col-md-8 col-lg-9 col-xl-10 p-5 main-content" style="position: relative;">
@@ -208,12 +192,73 @@
                     <i class="bi bi-gear-fill me-1"></i> Admin
                 </a>
             {% endif %}
-
             {% block content %}{% endblock %}
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="modalFiltrosPDF" tabindex="-1" aria-labelledby="modalFiltrosPDFLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: none; padding: 15px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title w-100 text-center fw-bold" id="modalFiltrosPDFLabel" style="color: #0d6efd;">Seleccionar Secciones para PDF</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="check_exp" checked>
+                    <label class="form-check-label ms-2" for="check_exp">Incluir Experiencia</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="check_cur" checked>
+                    <label class="form-check-label ms-2" for="check_cur">Incluir Cursos/Títulos</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="check_log" checked>
+                    <label class="form-check-label ms-2" for="check_log">Incluir Logros</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="check_prod" checked>
+                    <label class="form-check-label ms-2" for="check_prod">Incluir Prod. Académicos</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="check_proy" checked>
+                    <label class="form-check-label ms-2" for="check_proy">Incluir Proyectos</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="check_gar">
+                    <label class="form-check-label ms-2" for="check_gar">Incluir Venta Garage</label>
+                </div>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center">
+                <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Cancelar</button>
+                <button type="button" onclick="descargarPDFConFiltros()" class="btn btn-primary px-4" style="border-radius: 10px; background-color: #0d6efd;">Generar PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function descargarPDFConFiltros() {
+    const params = new URLSearchParams({
+        exp: document.getElementById('check_exp').checked,
+        cur: document.getElementById('check_cur').checked,
+        log: document.getElementById('check_log').checked,
+        prod: document.getElementById('check_prod').checked,
+        proy: document.getElementById('check_proy').checked,
+        gar: document.getElementById('check_gar').checked
+    });
+
+    // Cambia 'exportar_cv' por el nombre que tengas en tu urls.py para la vista pdf_datos_personales
+    const url = "{% url 'exportar_cv' %}?" + params.toString();
+    window.location.href = url;
+
+    // Cerrar modal
+    const modalElement = document.getElementById('modalFiltrosPDF');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    modalInstance.hide();
+}
+</script>
 </body>
 </html>

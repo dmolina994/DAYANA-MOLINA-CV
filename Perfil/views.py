@@ -49,8 +49,6 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
-# --- Vistas de Navegación ---
-
 def experiencia(request):
     perfil = get_active_profile()
     exp_list = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
@@ -81,20 +79,30 @@ def ventagarage(request):
     items = VentaGarage.objects.all()
     return render(request, 'ventagarage.html', {'garage_items': items, 'perfil': perfil})
 
-# --- Generación de PDF (Corregida) ---
+# --- Generación de PDF (Corregida con filtros) ---
 
 def pdf_datos_personales(request):
     perfil = get_object_or_404(DatosPersonales, perfilactivo=1)
     
+    # Captura de filtros desde la URL (Modal)
+    inc_exp = request.GET.get('exp', 'true') == 'true'
+    inc_cur = request.GET.get('cur', 'true') == 'true'
+    inc_log = request.GET.get('log', 'true') == 'true'
+    inc_prod = request.GET.get('prod', 'true') == 'true'
+    inc_proy = request.GET.get('proy', 'true') == 'true'
+    inc_gar = request.GET.get('gar', 'false') == 'true'
+
     foto_base64 = None
     if perfil.foto:
         foto_base64 = get_image_base64(perfil.foto.url)
 
-    experiencias = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
-    academicos = ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
-    laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
-    cursos_objs = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
-    reco_objs = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    # Filtrado según selección
+    experiencias = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True) if inc_exp else []
+    academicos = ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True) if inc_prod else []
+    laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True) if inc_proy else []
+    cursos_objs = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True) if inc_cur else []
+    reco_objs = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True) if inc_log else []
+    garage_items = VentaGarage.objects.all() if inc_gar else []
 
     template = get_template('cv_pdf_maestro.html')
     html = template.render({
@@ -104,7 +112,8 @@ def pdf_datos_personales(request):
         'productos': academicos,
         'productos_laborales': laborales, 
         'cursos': cursos_objs, 
-        'reconocimientos': reco_objs
+        'reconocimientos': reco_objs,
+        'garage': garage_items
     })
     
     buffer_cv = io.BytesIO()
@@ -124,8 +133,8 @@ def pdf_datos_personales(request):
                 except Exception: 
                     continue
 
-    pegar_certificados(cursos_objs)
-    pegar_certificados(reco_objs)
+    if inc_cur: pegar_certificados(cursos_objs)
+    if inc_log: pegar_certificados(reco_objs)
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="Portafolio_{perfil.apellidos}.pdf"'
