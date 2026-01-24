@@ -159,9 +159,11 @@ class ProductoLaboral(models.Model):
         ordering = ['-fechaproducto'] # <--- ORDENAR POR ACTUALIDAD
 
 
+from django.utils import timezone # Asegúrate de tener esta importación
+
 # --- 7. VENTA GARAGE ---
 class VentaGarage(models.Model):
-    # ... tus otros campos (idperfil, nombreproducto, estadoproducto, descripcion, valordelbien, foto, activar) ...
+    # ... tus otros campos iguales ...
     idperfilconqueestaactivo = models.ForeignKey(DatosPersonales, on_delete=models.CASCADE, related_name='ventas_garage')
     nombreproducto = models.CharField(max_length=100)
     estadoproducto = models.CharField(max_length=40, choices=[('Bueno', 'Bueno'), ('Regular', 'Regular')], default='Bueno')
@@ -170,11 +172,11 @@ class VentaGarage(models.Model):
     foto = models.ImageField(upload_to='fotos_garage/', blank=True, null=True)
     activarparaqueseveaenfront = models.BooleanField(default=True)
     
-    # NUEVO CAMPO: Se llena solo al crear el registro
-    fechapublicacion = models.DateTimeField(auto_now_add=True)
+    # CAMBIO AQUÍ: Usamos default=timezone.now para evitar el error en Render
+    fechapublicacion = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.nombreproducto
 
     class Meta:
-        ordering = ['-fechapublicacion'] # Ahora ordenamos por la fecha real de subida
+        ordering = ['-fechapublicacion']
