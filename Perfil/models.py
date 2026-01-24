@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from django.core.validators import MinValueValidator, RegexValidator # Se añade RegexValidator
+from django.core.validators import MinValueValidator, RegexValidator
 
 # --- FUNCIONES DE VALIDACIÓN ---
 
@@ -20,7 +20,6 @@ class DatosPersonales(models.Model):
     lugarnacimiento = models.CharField(max_length=60, blank=True, null=True)
     fechanacimiento = models.DateField(validators=[validar_no_futuro])
     
-    # MODIFICACIÓN AQUÍ: Única y solo números (exactamente 10)
     numerocedula = models.CharField(
         max_length=10, 
         unique=True, 
@@ -52,6 +51,7 @@ class DatosPersonales(models.Model):
         verbose_name = "Datos Personales"
         verbose_name_plural = "Datos Personales"
 
+
 # --- 2. EXPERIENCIA LABORAL ---
 class ExperienciaLaboral(models.Model):
     idperfilconqueestaactivo = models.ForeignKey(DatosPersonales, on_delete=models.CASCADE, related_name='experiencias')
@@ -79,6 +79,9 @@ class ExperienciaLaboral(models.Model):
     def __str__(self):
         return f"{self.cargodesempenado} en {self.nombrempresa}"
 
+    class Meta:
+        ordering = ['-fechainiciogestion'] # <--- ORDENAR POR ACTUALIDAD
+
 
 # --- 3. RECONOCIMIENTOS ---
 class Reconocimiento(models.Model):
@@ -95,6 +98,9 @@ class Reconocimiento(models.Model):
     def __str__(self):
         return self.descripcionreconocimiento
 
+    class Meta:
+        ordering = ['-fechareconocimiento'] # <--- ORDENAR POR ACTUALIDAD
+
 
 # --- 4. CURSOS REALIZADOS ---
 class CursoRealizado(models.Model):
@@ -102,7 +108,6 @@ class CursoRealizado(models.Model):
     nombrecurso = models.CharField(max_length=100)
     fechainicio = models.DateField(validators=[validar_no_futuro])
     fechafin = models.DateField(validators=[validar_no_futuro])
-    # Validación: Horas no pueden ser negativas (mínimo 1 hora)
     totalhoras = models.IntegerField(validators=[MinValueValidator(1)])
     descripcioncurso = models.CharField(max_length=100, blank=True, null=True)
     entidadpatrocinadora = models.CharField(max_length=100, blank=True, null=True)
@@ -122,6 +127,9 @@ class CursoRealizado(models.Model):
 
     def __str__(self):
         return self.nombrecurso
+
+    class Meta:
+        ordering = ['-fechainicio'] # <--- ORDENAR POR ACTUALIDAD
 
 
 # --- 5. PRODUCTOS ACADÉMICOS ---
@@ -147,26 +155,26 @@ class ProductoLaboral(models.Model):
     def __str__(self):
         return self.nombreproducto
 
+    class Meta:
+        ordering = ['-fechaproducto'] # <--- ORDENAR POR ACTUALIDAD
+
 
 # --- 7. VENTA GARAGE ---
 class VentaGarage(models.Model):
-    ESTADO_CHOICES = [
-        ('Bueno', 'Bueno'),
-        ('Regular', 'Regular'),
-    ]
-
+    # ... tus otros campos (idperfil, nombreproducto, estadoproducto, descripcion, valordelbien, foto, activar) ...
     idperfilconqueestaactivo = models.ForeignKey(DatosPersonales, on_delete=models.CASCADE, related_name='ventas_garage')
     nombreproducto = models.CharField(max_length=100)
-    estadoproducto = models.CharField(
-        max_length=40, 
-        choices=ESTADO_CHOICES, 
-        default='Bueno'
-    )
+    estadoproducto = models.CharField(max_length=40, choices=[('Bueno', 'Bueno'), ('Regular', 'Regular')], default='Bueno')
     descripcion = models.CharField(max_length=100, blank=True, null=True)
-    # Validación: El valor no puede ser menor a 0.01 (no puede ser gratis o negativo)
     valordelbien = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.01)])
     foto = models.ImageField(upload_to='fotos_garage/', blank=True, null=True)
     activarparaqueseveaenfront = models.BooleanField(default=True)
+    
+    # NUEVO CAMPO: Se llena solo al crear el registro
+    fechapublicacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.nombreproducto
+
+    class Meta:
+        ordering = ['-fechapublicacion'] # Ahora ordenamos por la fecha real de subida
